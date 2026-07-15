@@ -15,7 +15,7 @@
 - [x] **0.2 Env plumbing**
   Copy `server.env.example` / `web.env.example` into place; `apps/server/src/config.ts` parses env with zod, crashes on missing required vars.
   *Done when:* server starts with valid `.env`, exits with a clear message on a missing var.
-- [ ] **0.3 Supabase migrations**
+- [x] **0.3 Supabase migrations**
   `supabase/migrations/0001_init.sql` with tables from plan §3: `words`, `users`, `search_history` (incl. `chat_id`, `query_message_id`, `result_message_id`), `user_words` (with dormant SM-2 columns), `practice_reviews` + indexes.
   *Done when:* migration applies cleanly on a fresh Supabase project.
 - [ ] **0.4 Shared types**
