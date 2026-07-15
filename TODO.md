@@ -18,7 +18,7 @@
 - [x] **0.3 Supabase migrations**
   `supabase/migrations/0001_init.sql` with tables from plan §3: `words`, `users`, `search_history` (incl. `chat_id`, `query_message_id`, `result_message_id`), `user_words` (with dormant SM-2 columns), `practice_reviews` + indexes.
   *Done when:* migration applies cleanly on a fresh Supabase project.
-- [ ] **0.4 Shared types**
+- [x] **0.4 Shared types**
   `packages/shared`: zod schemas → `WordSummary` (sense-grouped: `senses[] { guideword, definition_en, translation_ru, examples[] {en, ru} }`), `PracticeReview`, API request/response types.
   *Done when:* both apps import types from `@vocab/shared`.
 
