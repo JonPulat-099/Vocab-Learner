@@ -1,0 +1,65 @@
+/**
+ * Gemini-free fallback: build a best-effort WordSummary directly from
+ * MW + Cambridge so a search never hard-fails because the AI step is down.
+ */
+import type { WordSummary, Sense } from "@vocab/shared";
+import type { MwParsed } from "./mw.service.js";
+import type { CambridgeResult } from "./cambridge.service.js";
+
+const MAX_EXAMPLES_PER_SENSE = 3;
+
+export function buildRawSummary(
+  word: string,
+  mw: MwParsed,
+  cambridge: CambridgeResult | null,
+): WordSummary {
+  const senses: Sense[] = [];
+  let partOfSpeech = "";
+  let transcription = "";
+
+  if (cambridge?.kind === "found") {
+    const entry = cambridge.entries[0];
+    if (entry) {
+      partOfSpeech = entry.pos ?? "";
+      transcription = entry.ipa ? `/${entry.ipa}/` : "";
+    }
+    for (const e of cambridge.entries) {
+      for (const s of e.senses) {
+        senses.push({
+          guideword: s.guideword ?? "",
+          definition_en: s.definition_en,
+          translation_ru: s.translation_ru ?? "",
+          examples: s.examples
+            .slice(0, MAX_EXAMPLES_PER_SENSE)
+            .map((ex) => ({ en: ex.en, ru: ex.ru ?? "" })),
+        });
+      }
+    }
+  }
+
+  if (senses.length === 0 && mw.kind === "entries") {
+    for (const entry of mw.entries) {
+      partOfSpeech ||= entry.fl ?? "";
+      for (const def of entry.shortdef) {
+        senses.push({
+          guideword: "",
+          definition_en: def,
+          translation_ru: "",
+          examples: entry.examples
+            .slice(0, MAX_EXAMPLES_PER_SENSE)
+            .map((en) => ({ en, ru: "" })),
+        });
+      }
+    }
+  }
+
+  return {
+    word,
+    forms: [],
+    part_of_speech: partOfSpeech,
+    transcription,
+    cefr_guess: "",
+    senses,
+    usage_note: "",
+  };
+}

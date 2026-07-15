@@ -39,10 +39,10 @@
 
 ## Phase 2 — Gemini + bot core
 
-- [ ] **2.1 `gemini.service.ts`**
+- [x] **2.1 `gemini.service.ts`**
   `@google/genai`, `GEMINI_MODEL`, `responseSchema` = `WordSummary`. Prompt: group into senses with one-word GUIDEWORD, merge MW+Cambridge, ≤3 examples/sense, RU translation for EVERY example (Cambridge's if present, else translate).
   *Done when:* returns schema-valid JSON for `feeling`; timeout → typed `GeminiUnavailable` error.
-- [ ] **2.2 Raw-card fallback**
+- [x] **2.2 Raw-card fallback**
   `buildRawSummary(mw, cambridge)` → `WordSummary` without Gemini (best-effort sense grouping from Cambridge structure).
   *Done when:* search still produces a card when Gemini throws.
 - [ ] **2.3 Bot skeleton** (`apps/server/src/bot/`)
