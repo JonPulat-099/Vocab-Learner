@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/*
+ * Theme tokens. Inside Telegram the --tg-theme-* variables are injected by
+ * telegram-web-app.js and the app inherits the user's Telegram theme.
+ * In a plain browser the --fb-* fallbacks apply (light/dark via media query).
+ */
+:root {
+  --fb-bg: #ffffff;
+  --fb-section: #f1f2f6;
+  --fb-ink: #1c1c1e;
+  --fb-hint: #8e8e93;
+  --fb-accent: #2481cc;
+  --fb-on-accent: #ffffff;
+  --fb-danger: #d63b30;
+  --fb-separator: #e5e5ea;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fb-bg: #17212b;
+    --fb-section: #232e3c;
+    --fb-ink: #f5f5f5;
+    --fb-hint: #708499;
+    --fb-accent: #6ab2f2;
+    --fb-on-accent: #ffffff;
+    --fb-danger: #ec6458;
+    --fb-separator: #101921;
+  }
+}
+
+@theme {
+  --color-*: initial;
+  --color-base: var(--tg-theme-bg-color, var(--fb-bg));
+  --color-section: var(--tg-theme-section-bg-color, var(--tg-theme-secondary-bg-color, var(--fb-section)));
+  --color-ink: var(--tg-theme-text-color, var(--fb-ink));
+  --color-hint: var(--tg-theme-hint-color, var(--fb-hint));
+  --color-accent: var(--tg-theme-button-color, var(--fb-accent));
+  --color-on-accent: var(--tg-theme-button-text-color, var(--fb-on-accent));
+  --color-link: var(--tg-theme-link-color, var(--fb-accent));
+  --color-danger: var(--tg-theme-destructive-text-color, var(--fb-danger));
+  --color-separator: var(--tg-theme-section-separator-color, var(--fb-separator));
+  --color-transparent: transparent;
+
+  /* Lexicographic voice: serif headwords + IPA, native UI everywhere else. */
+  --font-entry: Georgia, "Times New Roman", "Noto Serif", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-base text-ink font-sans antialiased;
+  /* Telegram Mini Apps can overscroll-bounce; keep the chrome steady. */
+  overscroll-behavior-y: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

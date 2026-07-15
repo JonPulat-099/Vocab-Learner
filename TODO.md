@@ -78,7 +78,7 @@
 
 ## Phase 5 — Website core (`apps/web`)
 
-- [ ] **5.1 Scaffold** — Vite + Vue 3 + `vue-router` + pinia + Tailwind; `useApi()` composable with JWT from localStorage; auth guard.
+- [x] **5.1 Scaffold** — Vite + Vue 3 + `vue-router` + pinia + Tailwind; `useApi()` composable with JWT from localStorage; auth guard. *(Runs as a Telegram Mini App: telegram-web-app.js bridge, `--tg-theme-*` design tokens with browser fallbacks, native BackButton, initData auto-login in the guard.)*
 - [ ] **5.2 `/login`** — Telegram Login Widget (`VITE_TG_BOT_USERNAME`) → `POST /api/auth/telegram` → store JWT → redirect.
 - [ ] **5.3 `/dictionary`** — saved words grid: word, POS, first RU gloss, CEFR chip; search box + POS filter; multi-select mode → "Practice selected".
 - [ ] **5.4 `/word/:id`** — sections: AI Summary (sense-grouped, full EN+RU example pairs) · Cambridge raw · Merriam-Webster raw · YouGlish embedded widget (official JS widget, `VITE_YOUGLISH_LANG`).
