@@ -29,7 +29,7 @@ const wordsRepo = createWordsRepo({
 
 const gemini = createGeminiService({
   apiKey: config.GEMINI_API_KEY,
-  model: "gemini-3.1-flash-lite",
+  model: config.GEMINI_MODEL,
   timeoutMs: config.GEMINI_TIMEOUT_MS,
 });
 

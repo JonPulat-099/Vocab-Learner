@@ -39,12 +39,20 @@ pnpm -r lint
 ```
 📖 feeling (feelings) /ˈfiː.lɪŋ/ [noun] · B1
 
-I. (EMOTION) emotion — чувство, эмоция
-  1. guilty feelings
+I. (EMOTION) emotion
+— чувство, эмоция · his, tuygʻu          ← RU · UZ, italic
+  1. guilty feelings                     ← examples italic, EN only
   2. a feeling of joy/sadness
+
+≈ emotion, sensation                     ← synonyms, if any
+
+<blockquote expandable>Idioms …          ← collapsed by Telegram
+💡 usage note (italic)
 ```
 - Roman numerals per sense; EN examples only on the card (RU pairs are website-only).
-- HTML parse mode; hard cap 4096 chars → truncate at ~5 senses, add "🌐 Full entry on site" button. Never emit unclosed HTML tags when truncating.
+- Bold = landmarks only (headword, sense numerals, idiom phrases); italic = translations/examples.
+- Idioms live in `<blockquote expandable>` (max 6); synonyms line prefixed `≈`.
+- HTML parse mode; hard cap 4096 chars → drop idioms → synonyms → tail senses (cap 5), add "🌐 Full entry on site" button. Never emit unclosed HTML tags when truncating.
 
 ## Gotchas
 

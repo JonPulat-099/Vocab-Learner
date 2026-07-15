@@ -132,11 +132,10 @@ export function createBot(deps: BotDeps): Bot {
       log.info({ word: row.word }, "summary served from cache");
       return row.summary;
     }
-    const mw = parseMw(row.mw_data);
     try {
       const summary = await deps.gemini.summarizeWord({
         word: row.word,
-        mw,
+        mwRaw: row.mw_data,
         cambridge: row.cambridge_data,
       });
       await deps.wordsRepo.saveSummary(row.id, summary);
@@ -146,7 +145,7 @@ export function createBot(deps: BotDeps): Bot {
       if (err instanceof GeminiUnavailable) {
         log.warn({ word: row.word, err: err.message }, "gemini unavailable — raw fallback card");
         // Not cached — next search retries Gemini.
-        return buildRawSummary(row.word, mw, row.cambridge_data);
+        return buildRawSummary(row.word, parseMw(row.mw_data), row.cambridge_data);
       }
       throw err;
     }

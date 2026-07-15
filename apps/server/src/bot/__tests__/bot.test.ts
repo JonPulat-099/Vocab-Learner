@@ -23,8 +23,16 @@ const feelingSummary: WordSummary = {
   transcription: "",
   cefr_guess: "B1",
   senses: [
-    { guideword: "EMOTION", definition_en: "emotion", translation_ru: "чувство", examples: [] },
+    {
+      guideword: "EMOTION",
+      definition_en: "emotion",
+      translation_ru: "чувство",
+      translation_uz: "his",
+      examples: [],
+    },
   ],
+  synonyms: [],
+  idioms: [],
   usage_note: "",
 };
 
@@ -198,7 +206,8 @@ describe("bot", () => {
 
     await bot.handleUpdate(textUpdate("feeling"));
     const edit = calls.find((c) => c.method === "editMessageText")!;
-    expect(edit.payload.text).toContain("emotion — чувство");
+    expect(edit.payload.text).toContain("(EMOTION) emotion");
+    expect(edit.payload.text).toContain("<i>чувство</i>");
     expect(deps.wordsRepo.saveSummary).not.toHaveBeenCalled();
   });
 });

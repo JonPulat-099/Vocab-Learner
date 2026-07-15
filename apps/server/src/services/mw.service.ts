@@ -11,6 +11,8 @@ export interface MwEntry {
   fl: string | null;
   shortdef: string[];
   examples: string[];
+  /** True for set-phrase/idiom entries like "sense of humor" (MW idioms section). */
+  isPhrase: boolean;
 }
 
 export type MwParsed =
@@ -66,6 +68,26 @@ function collectExamples(entry: Record<string, unknown>): string[] {
   return examples;
 }
 
+/**
+ * Strip bulky keys that add prompt tokens but no lexical value
+ * (literary quotes, etymology, audio refs, uuids) before sending raw MW to Gemini.
+ */
+export function trimMwForPrompt(raw: unknown): unknown {
+  const NOISE_KEYS = new Set(["quotes", "et", "sound", "uuid", "sort", "date", "art", "prs2"]);
+  const walk = (node: unknown): unknown => {
+    if (Array.isArray(node)) return node.map(walk);
+    if (node && typeof node === "object") {
+      return Object.fromEntries(
+        Object.entries(node)
+          .filter(([key]) => !NOISE_KEYS.has(key))
+          .map(([key, value]) => [key, walk(value)]),
+      );
+    }
+    return node;
+  };
+  return walk(raw);
+}
+
 export function parseMw(raw: unknown): MwParsed {
   if (!Array.isArray(raw) || raw.length === 0) {
     return { kind: "not_found" };
@@ -78,15 +100,17 @@ export function parseMw(raw: unknown): MwParsed {
   for (const item of raw) {
     if (!item || typeof item !== "object") continue;
     const entry = item as Record<string, unknown>;
-    const meta = entry.meta as { id?: string } | undefined;
+    const meta = entry.meta as { id?: string; section?: string } | undefined;
     const hwi = entry.hwi as { hw?: string } | undefined;
     if (!meta?.id) continue;
+    const fl = typeof entry.fl === "string" ? entry.fl : null;
     entries.push({
       id: meta.id,
       headword: (hwi?.hw ?? meta.id.split(":")[0] ?? "").replace(/\*/g, ""),
-      fl: typeof entry.fl === "string" ? entry.fl : null,
+      fl,
       shortdef: Array.isArray(entry.shortdef) ? (entry.shortdef as string[]) : [],
       examples: collectExamples(entry),
+      isPhrase: meta.section === "idioms" || (fl?.includes("phrase") ?? false),
     });
   }
   return entries.length > 0 ? { kind: "entries", entries } : { kind: "not_found" };
