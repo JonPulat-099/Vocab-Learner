@@ -30,7 +30,18 @@ export interface GeminiServiceDeps {
   model: string;
   timeoutMs: number;
   client?: GeminiClient;
+  /** Delays before each retry on transient 503/overload errors. */
+  retryDelaysMs?: number[];
 }
+
+const DEFAULT_RETRY_DELAYS_MS = [1500, 3000];
+
+function isTransientOverload(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes('"code":503') || msg.includes("UNAVAILABLE") || msg.includes("overloaded");
+}
+
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 const RESPONSE_JSON_SCHEMA = z.toJSONSchema(WordSummarySchema);
 
@@ -69,21 +80,30 @@ export function createGeminiService(deps: GeminiServiceDeps) {
       `CAMBRIDGE DATA:\n${JSON.stringify(input.cambridge ?? { kind: "not_found" })}`,
     ].join("\n\n");
 
+    const retryDelays = deps.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS;
     let text: string | undefined;
-    try {
-      const response = await client.generateContent({
-        model: deps.model,
-        contents,
-        config: {
-          responseMimeType: "application/json",
-          responseJsonSchema: RESPONSE_JSON_SCHEMA,
-          abortSignal: AbortSignal.timeout(deps.timeoutMs),
-          temperature: 0.2,
-        },
-      });
-      text = response.text;
-    } catch (err) {
-      throw new GeminiUnavailable(err);
+    for (let attempt = 0; ; attempt++) {
+      try {
+        const response = await client.generateContent({
+          model: deps.model,
+          contents,
+          config: {
+            responseMimeType: "application/json",
+            responseJsonSchema: RESPONSE_JSON_SCHEMA,
+            abortSignal: AbortSignal.timeout(deps.timeoutMs),
+            temperature: 0.2,
+          },
+        });
+        text = response.text;
+        break;
+      } catch (err) {
+        // Capacity spikes (503) are usually brief — retry before falling back.
+        if (isTransientOverload(err) && attempt < retryDelays.length) {
+          await sleep(retryDelays[attempt]!);
+          continue;
+        }
+        throw new GeminiUnavailable(err);
+      }
     }
     if (!text) throw new GeminiUnavailable("empty response");
 

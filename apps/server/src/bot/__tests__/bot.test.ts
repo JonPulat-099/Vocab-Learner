@@ -41,11 +41,11 @@ interface ApiCall {
   payload: Record<string, unknown>;
 }
 
-function setup(lookups: Record<string, WordLookup>) {
+function setup(lookups: Record<string, WordLookup>, webOrigin = "http://localhost:5173") {
   const deps = {
     token: "test:token",
     ownerTgId: OWNER,
-    webOrigin: "http://localhost:5173",
+    webOrigin,
     wordsRepo: {
       getOrFetchWord: vi.fn(async (w: string) => lookups[w] ?? { kind: "not_found" as const }),
       saveSummary: vi.fn(async () => {}),
@@ -133,6 +133,28 @@ describe("bot", () => {
       query_message_id: 10,
       result_message_id: 900,
     });
+  });
+
+  it("omits the site button for non-https WEB_ORIGIN on truncated cards (Telegram rejects localhost URLs)", async () => {
+    const manySenses = {
+      ...feelingSummary,
+      senses: Array.from({ length: 7 }, (_, i) => ({
+        guideword: `G${i}`,
+        definition_en: `def ${i}`,
+        translation_ru: "",
+        translation_uz: "",
+        examples: [],
+      })),
+    };
+    const keyboardFor = async (origin: string) => {
+      const s = setup({ feeling: { kind: "word", row: feelingRow } }, origin);
+      s.deps.gemini.summarizeWord.mockResolvedValue(manySenses);
+      await s.bot.handleUpdate(textUpdate("feeling"));
+      const edit = s.calls.find((c) => c.method === "editMessageText")!;
+      return JSON.stringify(edit.payload.reply_markup);
+    };
+    expect(await keyboardFor("http://localhost:5173")).not.toContain("Full entry");
+    expect(await keyboardFor("https://vocab.pages.dev")).toContain("Full entry");
   });
 
   it("did you mean: renders suggestion buttons (max 6) that re-trigger search", async () => {

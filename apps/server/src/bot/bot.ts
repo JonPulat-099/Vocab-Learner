@@ -159,7 +159,8 @@ export function createBot(deps: BotDeps): Bot {
         row.youglish_data?.link ?? `https://youglish.com/pron/${encodeURIComponent(row.word)}/english`,
       )
       .text(texts.buttons.clearHistory, "clear");
-    if (truncated) {
+    // Telegram rejects non-public URLs (localhost) in inline buttons — https only.
+    if (truncated && deps.webOrigin.startsWith("https://")) {
       keyboard.row().url(texts.buttons.fullEntry, `${deps.webOrigin}/word/${row.id}`);
     }
     return keyboard;

@@ -42,17 +42,20 @@ export function buildRawSummary(
     for (const entry of mw.entries) {
       if (entry.isPhrase) continue;
       partOfSpeech ||= entry.fl ?? "";
-      for (const def of entry.shortdef) {
+      // MW examples aren't mapped to shortdefs — attach them to the entry's
+      // first sense only instead of repeating them under every sense.
+      entry.shortdef.forEach((def, i) => {
         senses.push({
           guideword: "",
           definition_en: def,
           translation_ru: "",
           translation_uz: "",
-          examples: entry.examples
-            .slice(0, MAX_EXAMPLES_PER_SENSE)
-            .map((en) => ({ en, ru: "" })),
+          examples:
+            i === 0
+              ? entry.examples.slice(0, MAX_EXAMPLES_PER_SENSE).map((en) => ({ en, ru: "" }))
+              : [],
         });
-      }
+      });
     }
   }
 

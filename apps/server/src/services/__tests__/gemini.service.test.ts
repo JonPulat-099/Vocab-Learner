@@ -61,6 +61,54 @@ describe("gemini.service", () => {
     expect(call.contents).not.toContain('"uuid"');
   });
 
+  it("retries transient 503 overload errors before succeeding", async () => {
+    const overload = new Error('{"error":{"code":503,"status":"UNAVAILABLE"}}');
+    const client: GeminiClient = {
+      generateContent: vi
+        .fn()
+        .mockRejectedValueOnce(overload)
+        .mockResolvedValue({ text: JSON.stringify(feelingSummary) }),
+    };
+    const service = createGeminiService({
+      apiKey: "k",
+      model: "m",
+      timeoutMs: 1000,
+      client,
+      retryDelaysMs: [1],
+    });
+    await expect(service.summarizeWord(inputs)).resolves.toMatchObject({ word: "feeling" });
+    expect(client.generateContent).toHaveBeenCalledTimes(2);
+  });
+
+  it("gives up on persistent 503 after exhausting retries", async () => {
+    const overload = new Error('{"error":{"code":503,"status":"UNAVAILABLE"}}');
+    const client: GeminiClient = { generateContent: vi.fn().mockRejectedValue(overload) };
+    const service = createGeminiService({
+      apiKey: "k",
+      model: "m",
+      timeoutMs: 1000,
+      client,
+      retryDelaysMs: [1, 1],
+    });
+    await expect(service.summarizeWord(inputs)).rejects.toBeInstanceOf(GeminiUnavailable);
+    expect(client.generateContent).toHaveBeenCalledTimes(3);
+  });
+
+  it("does not retry non-transient failures", async () => {
+    const client: GeminiClient = {
+      generateContent: vi.fn().mockRejectedValue(new Error('{"error":{"code":404}}')),
+    };
+    const service = createGeminiService({
+      apiKey: "k",
+      model: "m",
+      timeoutMs: 1000,
+      client,
+      retryDelaysMs: [1, 1],
+    });
+    await expect(service.summarizeWord(inputs)).rejects.toBeInstanceOf(GeminiUnavailable);
+    expect(client.generateContent).toHaveBeenCalledTimes(1);
+  });
+
   it("wraps SDK failures/timeouts in GeminiUnavailable", async () => {
     const client: GeminiClient = {
       generateContent: vi.fn().mockRejectedValue(new Error("deadline exceeded")),
@@ -92,5 +140,12 @@ describe("buildRawSummary", () => {
     const summary = buildRawSummary("feeling", parseMw(mwRaw), null);
     expect(summary.senses.length).toBeGreaterThan(0);
     expect(summary.senses[0]!.definition_en).toBeTruthy();
+  });
+
+  it("does not repeat the same MW examples under every sense", () => {
+    const summary = buildRawSummary("feeling", parseMw(mwRaw), null);
+    const withExamples = summary.senses.filter((s) => s.examples.length > 0);
+    const flat = withExamples.flatMap((s) => s.examples.map((e) => e.en));
+    expect(new Set(flat).size).toBe(flat.length);
   });
 });
