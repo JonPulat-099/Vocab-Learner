@@ -19,7 +19,7 @@ const EnvSchema = z.object({
   YOUGLISH_API_KEY: z.string().optional(),
 
   GEMINI_API_KEY: z.string().min(1),
-  GEMINI_MODEL: z.string().default("gemini-2.5-flash"),
+  GEMINI_MODEL: z.string().default("gemini-3.5-flash"),
   GEMINI_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
 
   SUPABASE_URL: z.string().url(),
