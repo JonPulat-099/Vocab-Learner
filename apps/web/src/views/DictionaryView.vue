@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import type { WordListItem } from "@vocab/shared";
 import { useApi } from "../lib/api.js";
+import { Flip, gsap, motionOK } from "../lib/motion.js";
 import { usePracticeStore } from "../stores/practice.js";
 
 const api = useApi();
@@ -42,7 +43,33 @@ async function load(): Promise<void> {
   } finally {
     loading.value = false;
   }
+  if (words.value.length && motionOK()) {
+    await nextTick();
+    gsap.from("[data-word-grid] li", {
+      y: 16,
+      opacity: 0,
+      duration: 0.4,
+      stagger: 0.04,
+      ease: "power2.out",
+      clearProps: "all",
+    });
+  }
 }
+
+// FLIP the grid when the filters change: capture positions pre-render
+// ({ flush: "pre" }), animate from them after the DOM settles.
+watch([search, posFilter], async () => {
+  if (!motionOK()) return;
+  const state = Flip.getState("[data-word-grid] li");
+  await nextTick();
+  Flip.from(state, {
+    duration: 0.35,
+    ease: "power2.inOut",
+    absolute: true,
+    onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.3 }),
+    onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.95, duration: 0.2 }),
+  });
+}, { flush: "pre" });
 
 function openOrToggle(word: WordListItem): void {
   if (!selectMode.value) {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import type { WordDetails } from "@vocab/shared";
 import { useApi } from "../lib/api.js";
+import { gsap, motionOK, ScrollTrigger } from "../lib/motion.js";
 import YouglishWidget from "../components/YouglishWidget.vue";
 
 /** Roman numerals for sense numbering — same convention as the bot card. */
@@ -59,6 +60,23 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+  if (details.value && motionOK()) {
+    await nextTick();
+    // Sections drift in as the entry is scrolled — one trigger per section.
+    for (const el of document.querySelectorAll("[data-reveal]")) {
+      gsap.from(el, {
+        opacity: 0,
+        y: 24,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: { trigger: el, start: "top 88%" },
+      });
+    }
+  }
+});
+
+onUnmounted(() => {
+  for (const trigger of ScrollTrigger.getAll()) trigger.kill();
 });
 
 async function removeWord(): Promise<void> {
