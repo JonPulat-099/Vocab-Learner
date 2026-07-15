@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { WordListItem, WordSummary } from "@vocab/shared";
 
 export interface SavedWordItem {
   word_id: string;
@@ -46,7 +47,42 @@ export function createUserWordsRepo(supabase: SupabaseClient) {
     return { items, total: count ?? 0 };
   }
 
-  return { saveWord, isSaved, listSaved };
+  /** Web dictionary view: saved words with card-grid fields derived from the summary. */
+  async function listSavedDetailed(userId: string, q?: string): Promise<WordListItem[]> {
+    let query = supabase
+      .from("user_words")
+      .select("word_id, saved_at, words!inner(word, summary)")
+      .eq("user_id", userId)
+      .order("saved_at", { ascending: false });
+    if (q) query = query.ilike("words.word", `%${q}%`);
+    const { data, error } = await query;
+    if (error) throw new Error(`user_words list failed: ${error.message}`);
+    return (data ?? []).map((row) => {
+      const word = row.words as unknown as { word: string; summary: WordSummary | null };
+      return {
+        id: row.word_id as string,
+        word: word.word,
+        part_of_speech: word.summary?.part_of_speech ?? null,
+        translation_ru: word.summary?.senses[0]?.translation_ru ?? null,
+        cefr_guess: word.summary?.cefr_guess ?? null,
+        saved_at: row.saved_at as string,
+      };
+    });
+  }
+
+  /** Returns false when the word was not saved to begin with. */
+  async function unsaveWord(userId: string, wordId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .from("user_words")
+      .delete()
+      .eq("user_id", userId)
+      .eq("word_id", wordId)
+      .select("id");
+    if (error) throw new Error(`user_words delete failed: ${error.message}`);
+    return (data ?? []).length > 0;
+  }
+
+  return { saveWord, isSaved, listSaved, listSavedDetailed, unsaveWord };
 }
 
 export type UserWordsRepo = ReturnType<typeof createUserWordsRepo>;

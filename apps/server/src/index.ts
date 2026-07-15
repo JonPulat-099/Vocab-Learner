@@ -4,6 +4,7 @@ import { config } from "./config.js";
 import { getSupabase } from "./db/supabase.js";
 import { createUsersRepo } from "./db/users.repo.js";
 import { createUserWordsRepo } from "./db/user-words.repo.js";
+import { createPracticeRepo } from "./db/practice.repo.js";
 import { createWordsRepo } from "./services/words.repo.js";
 import { createGeminiService } from "./services/gemini.service.js";
 import { BOT_COMMANDS, createBot } from "./bot/bot.js";
@@ -57,6 +58,9 @@ await registerApi(app, {
   webOrigin: config.WEB_ORIGIN,
   allowDevLogin: config.NODE_ENV === "development",
   usersRepo,
+  userWordsRepo,
+  wordsRepo,
+  practiceRepo: createPracticeRepo(supabase),
 });
 
 // Populates Telegram's menu button; non-fatal if Telegram is unreachable at boot.

@@ -6,7 +6,13 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "@fastify/jwt";
 import type { UsersRepo } from "../db/users.repo.js";
+import type { UserWordsRepo } from "../db/user-words.repo.js";
+import type { PracticeRepo } from "../db/practice.repo.js";
+import type { WordsRepo } from "../services/words.repo.js";
 import { registerAuthRoutes } from "./auth.routes.js";
+import { registerWordRoutes } from "./words.routes.js";
+import { registerHistoryRoutes } from "./history.routes.js";
+import { registerPracticeRoutes } from "./practice.routes.js";
 
 export interface JwtClaims {
   sub: string; // users.id
@@ -35,6 +41,9 @@ export interface ApiDeps {
   /** Registers POST /api/auth/dev (owner JWT without Telegram) — never in production. */
   allowDevLogin: boolean;
   usersRepo: UsersRepo;
+  userWordsRepo: UserWordsRepo;
+  wordsRepo: WordsRepo;
+  practiceRepo: PracticeRepo;
 }
 
 export async function registerApi(app: FastifyInstance, deps: ApiDeps): Promise<void> {
@@ -53,4 +62,7 @@ export async function registerApi(app: FastifyInstance, deps: ApiDeps): Promise<
   });
 
   registerAuthRoutes(app, deps);
+  registerWordRoutes(app, deps);
+  registerHistoryRoutes(app, deps);
+  registerPracticeRoutes(app, deps);
 }

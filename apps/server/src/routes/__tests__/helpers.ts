@@ -2,6 +2,9 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import { createHmac } from "node:crypto";
 import type { UsersRepo, UserRow } from "../../db/users.repo.js";
+import type { UserWordsRepo } from "../../db/user-words.repo.js";
+import type { PracticeRepo } from "../../db/practice.repo.js";
+import type { WordsRepo } from "../../services/words.repo.js";
 import { registerApi, type ApiDeps } from "../api.js";
 
 export const BOT_TOKEN = "12345:TEST-TOKEN";
@@ -27,6 +30,34 @@ export function fakeUsersRepo(overrides: Partial<UsersRepo> = {}): UsersRepo {
   };
 }
 
+export function fakeUserWordsRepo(overrides: Partial<UserWordsRepo> = {}): UserWordsRepo {
+  return {
+    saveWord: async () => {},
+    isSaved: async () => false,
+    listSaved: async () => ({ items: [], total: 0 }),
+    listSavedDetailed: async () => [],
+    unsaveWord: async () => false,
+    ...overrides,
+  };
+}
+
+export function fakeWordsRepo(overrides: Partial<WordsRepo> = {}): WordsRepo {
+  return {
+    getOrFetchWord: async () => ({ kind: "not_found" }),
+    getWordById: async () => null,
+    saveSummary: async () => {},
+    ...overrides,
+  };
+}
+
+export function fakePracticeRepo(overrides: Partial<PracticeRepo> = {}): PracticeRepo {
+  return {
+    getQueue: async () => [],
+    recordReview: async () => false,
+    ...overrides,
+  };
+}
+
 export async function buildTestApp(deps: Partial<ApiDeps> = {}): Promise<FastifyInstance> {
   const app = Fastify();
   await registerApi(app, {
@@ -37,6 +68,9 @@ export async function buildTestApp(deps: Partial<ApiDeps> = {}): Promise<Fastify
     webOrigin: "http://localhost:5173",
     allowDevLogin: false,
     usersRepo: fakeUsersRepo(),
+    userWordsRepo: fakeUserWordsRepo(),
+    wordsRepo: fakeWordsRepo(),
+    practiceRepo: fakePracticeRepo(),
     ...deps,
   });
   await app.ready();
