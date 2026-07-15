@@ -80,7 +80,7 @@
 
 - [x] **5.1 Scaffold** — Vite + Vue 3 + `vue-router` + pinia + Tailwind; `useApi()` composable with JWT from localStorage; auth guard. *(Runs as a Telegram Mini App: telegram-web-app.js bridge, `--tg-theme-*` design tokens with browser fallbacks, native BackButton, initData auto-login in the guard.)*
 - [x] **5.2 `/login`** — Telegram Login Widget (`VITE_TG_BOT_USERNAME`) → `POST /api/auth/telegram` → store JWT → redirect. *(Inside Telegram: silent initData login; localhost: dev sign-in button.)*
-- [ ] **5.3 `/dictionary`** — saved words grid: word, POS, first RU gloss, CEFR chip; search box + POS filter; multi-select mode → "Practice selected".
+- [x] **5.3 `/dictionary`** — saved words grid: word, POS, first RU gloss, CEFR chip; search box + POS filter; multi-select mode → "Practice selected".
 - [ ] **5.4 `/word/:id`** — sections: AI Summary (sense-grouped, full EN+RU example pairs) · Cambridge raw · Merriam-Webster raw · YouGlish embedded widget (official JS widget, `VITE_YOUGLISH_LANG`).
 - [ ] **5.5 GSAP pass 1** — staggered grid entrance, FLIP on filter, ScrollTrigger reveals on word page.
 - [ ] **5.6 YouGlish Mini App** — lightweight `/youglish/:word` page (no auth) embedding the official YouGlish widget (reuse 5.4 embed; register a widget key). Bot: 🎧 button becomes `keyboard.webApp(...)` when `WEB_ORIGIN` is https (Telegram rejects non-https web_app URLs), else keep the current plain youglish.com URL button.
