@@ -2,14 +2,425 @@
   {
     "meta": {
       "id": "feeling:1",
-      "uuid": "6d4c0f8e-0000-0000-0000-000000000001",
+      "uuid": "b2759c39-b68e-4089-b6b9-eb3e45f64a1d",
+      "sort": "070788000",
       "src": "collegiate",
       "section": "alpha",
-      "stems": ["feeling", "feelings"],
+      "stems": [
+        "feeling",
+        "feelings"
+      ],
       "offensive": false
     },
-    "hwi": { "hw": "feel*ing", "prs": [{ "mw": "ˈfē-liŋ" }] },
+    "hom": 1,
+    "hwi": {
+      "hw": "feel*ing",
+      "prs": [
+        {
+          "mw": "ˈfē-liŋ",
+          "sound": {
+            "audio": "feelin01",
+            "ref": "c",
+            "stat": "1"
+          }
+        }
+      ]
+    },
     "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "pseq",
+              [
+                [
+                  "sense",
+                  {
+                    "sn": "1 a (1)",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}the one of the basic physical senses of which the skin contains the chief end organs and of which the sensations of touch and temperature are characteristic {bc}{sx|touch||}"
+                      ]
+                    ]
+                  }
+                ],
+                [
+                  "sense",
+                  {
+                    "sn": "(2)",
+                    "dt": [
+                      [
+                        "text",
+                        "{bc}a sensation experienced through this sense"
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}generalized bodily consciousness or sensation"
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "c",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}appreciative or responsive awareness or recognition "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "experience a {wi}feeling{/wi} of safety"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "2 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}an emotional state or reaction "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "a kindly {wi}feeling{/wi} toward the boy"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "ins": [
+                  {
+                    "if": "feel*ings",
+                    "spl": "plural"
+                  }
+                ],
+                "dt": [
+                  [
+                    "text",
+                    "{bc}susceptibility to impression {bc}{sx|sensitivity||} "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "the remark hurt her {wi}feelings{/wi}"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "3 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}the undifferentiated background of one's awareness considered apart from any identifiable sensation, perception, or thought"
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}the overall quality of one's awareness"
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "c",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}conscious recognition {bc}{sx|sense||}"
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "4 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}often unreasoned opinion or belief {bc}{sx|sentiment||} "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "What are your {wi}feelings{/wi} about this subject?"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}{sx|presentiment||} "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "I have a {wi}feeling{/wi} she's not going to like this."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "5",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}capacity to respond emotionally especially with the higher emotions "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "found out how much {wi}feeling{/wi} his mother really had"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "6",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}the character ascribed to something {bc}{sx|atmosphere||} "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "The place had the {wi}feeling{/wi} of a haunted house."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "7 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}the quality of a work of art that conveys the emotion of the artist "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "A {wi}feeling{/wi} of the outdoors has been realized with sky-blue ceiling and natural colors.",
+                        "aq": {
+                          "source": "{it}Playthings{/it}"
+                        }
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}sympathetic aesthetic response "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "a person of fine {wi}feeling{/wi}"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "8",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}{sx|feel||4}"
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "syns": [
+      {
+        "pl": "synonyms",
+        "pt": [
+          [
+            "text",
+            "{sc}feeling{/sc} {sc}emotion{/sc} {sc}affection{/sc} {sc}sentiment{/sc} {sc}passion{/sc} mean a subjective response to a person, thing, or situation. {sc}feeling{/sc} denotes any partly mental, partly physical response marked by pleasure, pain, attraction, or repulsion; it may suggest the mere existence of a response but imply nothing about the nature or intensity of it. "
+          ],
+          [
+            "vis",
+            [
+              {
+                "t": "the {it}feelings{/it} that once moved me are gone"
+              }
+            ]
+          ],
+          [
+            "text",
+            " {sc}emotion{/sc} carries a strong implication of excitement or agitation but, like {sc}feeling{/sc}, encompasses both positive and negative responses. "
+          ],
+          [
+            "vis",
+            [
+              {
+                "t": "the drama portrays the {it}emotions{/it} of adolescence"
+              }
+            ]
+          ],
+          [
+            "text",
+            " {sc}affection{/sc} applies to feelings that are also inclinations or likings. "
+          ],
+          [
+            "vis",
+            [
+              {
+                "t": "a memoir of childhood filled with {it}affection{/it} for her family"
+              }
+            ]
+          ],
+          [
+            "text",
+            " {sc}sentiment{/sc} often implies an emotion inspired by an idea. "
+          ],
+          [
+            "vis",
+            [
+              {
+                "t": "her feminist {it}sentiments{/it} are well known"
+              }
+            ]
+          ],
+          [
+            "text",
+            " {sc}passion{/sc} suggests a very powerful or controlling emotion. "
+          ],
+          [
+            "vis",
+            [
+              {
+                "t": "revenge became his ruling {it}passion{/it}"
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "date": "13th century{ds||1|a|1}",
+    "shortdef": [
+      "the one of the basic physical senses of which the skin contains the chief end organs and of which the sensations of touch and temperature are characteristic : touch",
+      "a sensation experienced through this sense",
+      "generalized bodily consciousness or sensation"
+    ]
+  },
+  {
+    "meta": {
+      "id": "feeling:2",
+      "uuid": "7ce547f3-1bb9-4875-9111-4aefe95162c0",
+      "sort": "070789000",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": [
+        "feeling",
+        "feelingly",
+        "feelingness",
+        "feelingnesses"
+      ],
+      "offensive": false
+    },
+    "hom": 2,
+    "hwi": {
+      "hw": "feeling"
+    },
+    "fl": "adjective",
     "def": [
       {
         "sseq": [
@@ -19,8 +430,22 @@
               {
                 "sn": "1 a",
                 "dt": [
-                  ["text", "{bc}the one of the basic physical senses of which the skin contains the chief end organs"],
-                  ["vis", [{ "t": "lost all {it}feeling{/it} in his fingers" }]]
+                  [
+                    "text",
+                    "{bc}{sx|sentient||}, {sx|sensitive||}"
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}easily moved emotionally"
+                  ]
                 ]
               }
             ]
@@ -30,9 +455,14 @@
               "sense",
               {
                 "sn": "2",
+                "sls": [
+                  "obsolete"
+                ],
                 "dt": [
-                  ["text", "{bc}an emotional state or reaction"],
-                  ["vis", [{ "t": "a {it}feeling{/it} of joy" }, { "t": "guilty {it}feelings{/it}" }]]
+                  [
+                    "text",
+                    "{bc}deeply felt"
+                  ]
                 ]
               }
             ]
@@ -43,8 +473,569 @@
               {
                 "sn": "3",
                 "dt": [
-                  ["text", "{bc}unreasoned opinion or belief {bc}{sx|premonition||}"],
-                  ["vis", [{ "t": "I have a {it}feeling{/it} that we should wait." }]]
+                  [
+                    "text",
+                    "{bc}expressing emotion or sensitivity"
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "uros": [
+      {
+        "ure": "feel*ing*ly",
+        "prs": [
+          {
+            "mw": "ˈfē-liŋ-lē",
+            "sound": {
+              "audio": "feelin02",
+              "ref": "c",
+              "stat": "1"
+            }
+          }
+        ],
+        "fl": "adverb"
+      },
+      {
+        "ure": "feel*ing*ness",
+        "fl": "noun"
+      }
+    ],
+    "date": "14th century{ds||1|a|}",
+    "shortdef": [
+      "sentient, sensitive",
+      "easily moved emotionally",
+      "deeply felt"
+    ]
+  },
+  {
+    "meta": {
+      "id": "feel:1",
+      "uuid": "53c17dba-0c00-4244-a04f-c16f1e2078fe",
+      "sort": "070783000",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": [
+        "feel",
+        "feeling",
+        "feels",
+        "felt"
+      ],
+      "offensive": false
+    },
+    "hom": 1,
+    "hwi": {
+      "hw": "feel",
+      "prs": [
+        {
+          "mw": "ˈfēl",
+          "sound": {
+            "audio": "feel0001",
+            "ref": "c",
+            "stat": "1"
+          }
+        }
+      ]
+    },
+    "fl": "verb",
+    "ins": [
+      {
+        "if": "felt",
+        "prs": [
+          {
+            "mw": "ˈfelt",
+            "sound": {
+              "audio": "feel0002",
+              "ref": "c",
+              "stat": "1"
+            }
+          }
+        ]
+      },
+      {
+        "if": "feel*ing"
+      }
+    ],
+    "def": [
+      {
+        "vd": "transitive verb",
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "sn": "1 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to handle or touch in order to examine, test, or explore some quality "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "She {it}felt{/it} the fabric to see if it was wool."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to perceive by a physical sensation coming from discrete end organs (as of the skin or muscles) "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "He {it}felt{/it} a sudden pain in his leg."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "2 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to undergo passive experience of "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "continually {it}felt{/it} the resentment of his competitors"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to have one's sensibilities markedly affected by "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "{it}felt{/it} the insult deeply"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "3",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to ascertain by cautious trial "
+                  ],
+                  [
+                    "uns",
+                    [
+                      [
+                        [
+                          "text",
+                          "usually used with {it}out{/it} "
+                        ],
+                        [
+                          "vis",
+                          [
+                            {
+                              "t": "{wi}feeling{/wi} out the sentiments of their neighbors on the subject of school improvements"
+                            }
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "4 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to be aware of by instinct or inference "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "{wi}feel{/wi} trouble brewing"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}{sx|believe||}, {sx|think||} "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "say what you really {wi}feel{/wi}"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "5",
+                "sls": [
+                  "US slang"
+                ],
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to understand (someone) {bc}to know how (someone) feels "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "Yeah, I {wi}feel{/wi} you on that. I fall asleep every time I'm in the car as well.",
+                        "aq": {
+                          "auth": "Scott Sugarman"
+                        }
+                      },
+                      {
+                        "t": "When you buckle your chinstrap up, it's with a purpose, dog! Do you {wi}feel{/wi} me?",
+                        "aq": {
+                          "auth": "Eric Berry"
+                        }
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      },
+      {
+        "vd": "intransitive verb",
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "sn": "1 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to receive or be able to receive a tactile sensation "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "lost the ability to {wi}feel{/wi} in his fingertips"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to search for something by using the sense of touch "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "She {it}felt{/it} in her purse for her keys."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "2 a",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to be conscious of an inward impression, state of mind, or physical condition "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "I {wi}feel{/wi} sick."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ],
+            [
+              "sense",
+              {
+                "sn": "b",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to have a marked sentiment or opinion "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "{wi}feels{/wi} strongly about it"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "3",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}{sx|seem||} "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "it {wi}feels{/wi} like spring today"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "4",
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to have sympathy or pity "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "I {wi}feel{/wi} for you"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "dxnls": [
+      "see also {dxt|feel like||}"
+    ],
+    "et": [
+      [
+        "text",
+        "Middle English {it}felen{/it}, from Old English {it}fēlan{/it}; akin to Old High German {it}fuolen{/it} to feel, Latin {it}palpare{/it} to caress"
+      ]
+    ],
+    "date": "before 12th century{ds|t|1|a|}",
+    "shortdef": [
+      "to handle or touch in order to examine, test, or explore some quality",
+      "to perceive by a physical sensation coming from discrete end organs (as of the skin or muscles)",
+      "to undergo passive experience of"
+    ]
+  },
+  {
+    "meta": {
+      "id": "fellow feeling",
+      "uuid": "623dc6c4-9d2d-45e4-beb4-e8dd57eb6892",
+      "sort": "070834000",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": [
+        "fellow feeling",
+        "fellow feelings"
+      ],
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "fellow feeling"
+    },
+    "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "dt": [
+                  [
+                    "text",
+                    "{bc}a feeling of community of interest or of mutual understanding"
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "date": "1621",
+    "shortdef": [
+      "a feeling of community of interest or of mutual understanding"
+    ]
+  },
+  {
+    "meta": {
+      "id": "self-feeling",
+      "uuid": "3dd2ca3d-19ef-436c-a6c1-728fbda9f6c0",
+      "sort": "212311000",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": [
+        "self-feeling",
+        "self-feelings"
+      ],
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "self-feel*ing",
+      "prs": [
+        {
+          "mw": "ˈself-ˈfē-liŋ",
+          "sound": {
+            "audio": "selffe04",
+            "ref": "c",
+            "stat": "1"
+          }
+        }
+      ]
+    },
+    "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "dt": [
+                  [
+                    "text",
+                    "{bc}self-centered emotion"
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "date": "circa 1652",
+    "shortdef": [
+      "self-centered emotion"
+    ]
+  },
+  {
+    "meta": {
+      "id": "a feeling of",
+      "uuid": "956444f5-532d-4e3e-904b-f0fbf853ab2e",
+      "sort": "350132000",
+      "src": "ld",
+      "section": "idioms",
+      "stems": [
+        "a feeling of"
+      ],
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "a feeling of"
+    },
+    "fl": "phrase",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "dt": [
+                  [
+                    "text",
+                    "{bc}a sensation of (some emotional or physical state, such as comfort, loyalty, safety, etc.) "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "The new security patrols gave residents {it}a feeling of{/it} safety."
+                      }
+                    ]
+                  ]
                 ]
               }
             ]
@@ -53,22 +1044,25 @@
       }
     ],
     "shortdef": [
-      "the one of the basic physical senses of which the skin contains the chief end organs",
-      "an emotional state or reaction",
-      "unreasoned opinion or belief"
+      "a sensation of (some emotional or physical state, such as comfort, loyalty, safety, etc.)"
     ]
   },
   {
     "meta": {
-      "id": "feeling:2",
-      "uuid": "6d4c0f8e-0000-0000-0000-000000000002",
-      "src": "collegiate",
-      "section": "alpha",
-      "stems": ["feeling", "feelingly"],
+      "id": "good feeling",
+      "uuid": "90a20910-a160-4e62-91b3-40fc76248ed7",
+      "sort": "354166000",
+      "src": "ld",
+      "section": "idioms",
+      "stems": [
+        "good feeling"
+      ],
       "offensive": false
     },
-    "hwi": { "hw": "feel*ing" },
-    "fl": "adjective",
+    "hwi": {
+      "hw": "good feeling"
+    },
+    "fl": "noun",
     "def": [
       {
         "sseq": [
@@ -76,10 +1070,19 @@
             [
               "sense",
               {
-                "sn": "1",
                 "dt": [
-                  ["text", "{bc}{sx|sentient||} {bc}capable of feeling"],
-                  ["vis", [{ "t": "a {it}feeling{/it} heart" }]]
+                  [
+                    "text",
+                    "{bc}an expectation that something will be go well "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "I have a {it}good feeling{/it} about this project."
+                      }
+                    ]
+                  ]
                 ]
               }
             ]
@@ -87,6 +1090,141 @@
         ]
       }
     ],
-    "shortdef": ["sentient; capable of feeling", "expressing emotion or sensitivity"]
+    "shortdef": [
+      "an expectation that something will be go well"
+    ]
+  },
+  {
+    "meta": {
+      "id": "know the feeling",
+      "uuid": "a603ea5e-7cd1-4fd2-94b0-7483e1780feb",
+      "sort": "356106000",
+      "src": "ld",
+      "section": "idioms",
+      "stems": [
+        "know the feeling"
+      ],
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "know the feeling"
+    },
+    "fl": "phrase",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "dt": [
+                  [
+                    "text",
+                    "{bc}to understand how someone feels about something "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "\"I could really use a vacation.\" \"I {it}know the feeling{/it}.\""
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": [
+      "to understand how someone feels about something"
+    ]
+  },
+  {
+    "meta": {
+      "id": "sinking feeling",
+      "uuid": "a039eb44-4e0f-40c0-ba0d-f5ca561a7a9c",
+      "sort": "363378000",
+      "src": "ld",
+      "section": "idioms",
+      "stems": [
+        "sinking feeling"
+      ],
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "sinking feeling"
+    },
+    "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "dt": [
+                  [
+                    "text",
+                    "{bc}a feeling of dread or discouragement "
+                  ],
+                  [
+                    "vis",
+                    [
+                      {
+                        "t": "She got that {it}sinking feeling{/it} as she viewed the storm damage."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": [
+      "a feeling of dread or discouragement"
+    ]
+  },
+  {
+    "meta": {
+      "id": "warm feeling",
+      "uuid": "03e53434-5966-4994-b1b5-a95959ede93a",
+      "sort": "366316000",
+      "src": "ld",
+      "section": "idioms",
+      "stems": [
+        "warm feeling"
+      ],
+      "offensive": false
+    },
+    "hwi": {
+      "hw": "warm feeling"
+    },
+    "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "dt": [
+                  [
+                    "text",
+                    "{bc}a good, pleasant, or friendly feeling"
+                  ]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": [
+      "a good, pleasant, or friendly feeling"
+    ]
   }
 ]
