@@ -5,8 +5,19 @@ export const texts = {
     "Russian translations and examples.\n\n" +
     "Commands:\n" +
     "/search <word> — look a word up\n" +
+    "/help — how to use the bot\n" +
     "/mywords — your saved words (soon)\n" +
     "/history — recent searches (soon)",
+  help:
+    "📖 Vocab Learner bot\n\n" +
+    "Send me any English word and I'll reply with a card: definitions grouped by sense, " +
+    "Russian/Uzbek translations, examples, synonyms and idioms.\n\n" +
+    "Commands:\n" +
+    "/search <word> — look a word up\n" +
+    "/help — this message\n" +
+    "/mywords — your saved words (soon)\n" +
+    "/history — recent searches (soon)\n\n" +
+    "Tip: you don't need /search — just type the word.",
   searching: "⏳ Searching…",
   notFound: (word: string) => `😕 Couldn't find “${word}” in any source.`,
   didYouMean: (word: string) => `🤔 No entry for “${word}”. Did you mean:`,

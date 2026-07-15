@@ -11,6 +11,13 @@ import { texts } from "./texts.js";
 
 const MAX_SUGGESTIONS = 6;
 
+/** Commands shown in Telegram's menu button (registered via setMyCommands). */
+export const BOT_COMMANDS = [
+  { command: "search", description: "Look a word up" },
+  { command: "help", description: "How to use the bot" },
+  { command: "start", description: "Restart the bot" },
+] as const;
+
 /** Minimal logger surface (pino-compatible). */
 export interface BotLogger {
   info(obj: Record<string, unknown> | string, msg?: string): void;
@@ -46,6 +53,10 @@ export function createBot(deps: BotDeps): Bot {
   bot.command("start", async (ctx) => {
     await deps.usersRepo.upsertUser(ctx.from!);
     await ctx.reply(texts.start);
+  });
+
+  bot.command("help", async (ctx) => {
+    await ctx.reply(texts.help);
   });
 
   bot.command("search", async (ctx) => {

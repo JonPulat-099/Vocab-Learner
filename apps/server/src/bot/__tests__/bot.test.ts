@@ -113,6 +113,14 @@ describe("bot", () => {
     expect(calls.map((c) => c.method)).toContain("sendMessage");
   });
 
+  it("/help replies with the help text without triggering a search", async () => {
+    const { bot, deps, calls } = setup({});
+    await bot.handleUpdate(textUpdate("/help"));
+    const send = calls.find((c) => c.method === "sendMessage")!;
+    expect(send.payload.text).toContain("/search");
+    expect(deps.wordsRepo.getOrFetchWord).not.toHaveBeenCalled();
+  });
+
   it("search: sends placeholder, edits it with the HTML card, stores history", async () => {
     const { bot, deps, calls } = setup({ feeling: { kind: "word", row: feelingRow } });
     await bot.handleUpdate(textUpdate("feeling"));

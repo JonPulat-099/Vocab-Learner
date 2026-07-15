@@ -5,7 +5,7 @@ import { getSupabase } from "./db/supabase.js";
 import { createUsersRepo } from "./db/users.repo.js";
 import { createWordsRepo } from "./services/words.repo.js";
 import { createGeminiService } from "./services/gemini.service.js";
-import { createBot } from "./bot/bot.js";
+import { BOT_COMMANDS, createBot } from "./bot/bot.js";
 
 const app = Fastify({
   logger: {
@@ -41,6 +41,11 @@ const bot = createBot({
   usersRepo: createUsersRepo(supabase),
   gemini,
   logger: app.log,
+});
+
+// Populates Telegram's menu button; non-fatal if Telegram is unreachable at boot.
+bot.api.setMyCommands([...BOT_COMMANDS]).catch((err) => {
+  app.log.warn({ err }, "failed to register bot commands menu");
 });
 
 app.get("/healthz", async () => ({ ok: true }));
