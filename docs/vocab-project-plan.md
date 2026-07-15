@@ -284,7 +284,7 @@ vocab/
 └─ .env.example          # BOT_TOKEN, MW_KEY, GEMINI_KEY, SUPABASE_URL/KEY, JWT_SECRET
 ```
 
-yarn workspaces; TypeScript everywhere.
+pnpm workspaces; TypeScript everywhere.
 
 ---
 

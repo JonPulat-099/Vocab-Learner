@@ -2,17 +2,17 @@
 
 > Task list for Claude Code. Work top-to-bottom; each task is atomic and has a "done when" check.
 > Full context lives in `docs/vocab-project-plan.md` — read it before starting a phase.
-> Stack: yarn workspaces · TS · Fastify + grammY (one process, `apps/server`) · Vue 3 + Tailwind + GSAP (`apps/web`) · Supabase · Gemini structured output.
+> Stack: pnpm workspaces · TS · Fastify + grammY (one process, `apps/server`) · Vue 3 + Tailwind + GSAP (`apps/web`) · Supabase · Gemini structured output.
 > Single user (guard by `OWNER_TG_ID`). Cache-first: a word is fetched from sources + summarized by Gemini once, forever.
 
 ---
 
 ## Phase 0 — Foundations
 
-- [ ] **0.1 Scaffold monorepo**
-  yarn workspaces: `apps/server`, `apps/web`, `packages/shared`. TS config base + per-package. ESLint + Prettier.
-  *Done when:* `yarn -r build` passes on empty packages.
-- [ ] **0.2 Env plumbing**
+- [x] **0.1 Scaffold monorepo**
+  pnpm workspaces: `apps/server`, `apps/web`, `packages/shared`. TS config base + per-package. ESLint + Prettier.
+  *Done when:* `pnpm -r build` passes on empty packages.
+- [x] **0.2 Env plumbing**
   Copy `server.env.example` / `web.env.example` into place; `apps/server/src/config.ts` parses env with zod, crashes on missing required vars.
   *Done when:* server starts with valid `.env`, exits with a clear message on a missing var.
 - [ ] **0.3 Supabase migrations**
@@ -94,7 +94,7 @@
 
 ## Phase 7 — Deploy (free tier)
 
-- [ ] **7.1 Dockerfile** for `apps/server` (multi-stage, node:22-slim, yarn deploy --prod).
+- [ ] **7.1 Dockerfile** for `apps/server` (multi-stage, node:22-slim, pnpm deploy --prod).
 - [ ] **7.2 GitHub Actions** — build image on push to `main`, push to registry, trigger Koyeb deploy (build in CI, not on Koyeb's 0.1 vCPU).
 - [ ] **7.3 Koyeb service** — env vars, `BOT_MODE=webhook`, health check route `GET /healthz`; register webhook `https://<app>.koyeb.app/webhook/<WEBHOOK_SECRET>` with `secret_token`.
 - [ ] **7.4 Cloudflare Pages** — deploy `apps/web` build; set `VITE_API_URL` to Koyeb URL; update `WEB_ORIGIN`; BotFather `/setdomain` with the Pages domain.

@@ -11,12 +11,12 @@ Read before large tasks: `docs/vocab-project-plan.md` (full spec), `TODO.md` (ta
 ## Commands
 
 ```bash
-yarn install
-yarn --filter server dev      # Fastify + bot, long-polling
-yarn --filter web dev         # Vite :5173
-yarn -r test                  # vitest, fixture-based
-yarn -r build
-yarn -r lint
+pnpm install
+pnpm --filter server dev      # Fastify + bot, long-polling
+pnpm --filter web dev         # Vite :5173
+pnpm -r test                  # vitest, fixture-based
+pnpm -r build
+pnpm -r lint
 ```
 
 ## Architecture (invariants — do not change without asking)

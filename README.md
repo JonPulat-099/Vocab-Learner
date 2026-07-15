@@ -67,7 +67,7 @@ CLAUDE.md        # project memory for Claude Code
 
 ## Setup
 
-Prereqs: Node 22+, yarn, a Supabase project, and these keys:
+Prereqs: Node 22+, pnpm, a Supabase project, and these keys:
 
 | Key | Where |
 |---|---|
@@ -77,7 +77,7 @@ Prereqs: Node 22+, yarn, a Supabase project, and these keys:
 | `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Supabase project settings |
 
 ```bash
-yarn install
+pnpm install
 
 # env
 cp apps/server/.env.example apps/server/.env   # fill in keys, set OWNER_TG_ID to your tg id
@@ -87,8 +87,8 @@ cp apps/web/.env.example apps/web/.env
 # apply supabase/migrations/*.sql to your project (Supabase SQL editor or CLI)
 
 # run
-yarn --filter server dev     # Fastify + bot in long-polling mode
-yarn --filter web dev        # Vite on :5173
+pnpm --filter server dev     # Fastify + bot in long-polling mode
+pnpm --filter web dev        # Vite on :5173
 ```
 
 The bot runs in **long-polling** locally (`BOT_MODE=polling`) — no tunnel needed. `OWNER_TG_ID` makes the bot single-user: messages from anyone else are ignored.
@@ -96,7 +96,7 @@ The bot runs in **long-polling** locally (`BOT_MODE=polling`) — no tunnel need
 ## Testing
 
 ```bash
-yarn -r test
+pnpm -r test
 ```
 
 Source parsers are tested against **saved fixtures** (`fixtures/*.html`, `fixtures/*.json`) — CI never makes live requests. If Cambridge changes its markup, re-save the fixture and update the single `SELECTORS` config in `cambridge.service.ts`.
