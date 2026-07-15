@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getYouglish } from "./youglish.service.js";
+import { getYouglish } from "../youglish.service.js";
 
 describe("getYouglish", () => {
   it("returns the correct deep link", async () => {

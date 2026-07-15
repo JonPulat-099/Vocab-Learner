@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { fetchMwRaw, parseMw, stripMwTokens } from "./mw.service.js";
+import { fetchMwRaw, parseMw, stripMwTokens } from "../mw.service.js";
 
 const fixture = (name: string): unknown =>
-  JSON.parse(readFileSync(path.join(import.meta.dirname, "../../fixtures", name), "utf8"));
+  JSON.parse(readFileSync(path.join(import.meta.dirname, "../../../fixtures", name), "utf8"));
 
 describe("parseMw", () => {
   it("parses a known word into entries with fl, shortdef and examples", () => {

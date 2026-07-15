@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Update, UserFromGetMe } from "grammy/types";
 import type { WordSummary } from "@vocab/shared";
-import { createBot, type BotDeps } from "./bot.js";
-import type { WordLookup, WordRow } from "../services/words.repo.js";
+import { createBot, type BotDeps } from "../bot.js";
+import type { WordLookup, WordRow } from "../../services/words.repo.js";
 
 const OWNER = 111;
 
@@ -193,7 +193,7 @@ describe("bot", () => {
         },
       },
     });
-    const { GeminiUnavailable } = await import("../services/gemini.service.js");
+    const { GeminiUnavailable } = await import("../../services/gemini.service.js");
     deps.gemini.summarizeWord.mockRejectedValue(new GeminiUnavailable("down"));
 
     await bot.handleUpdate(textUpdate("feeling"));

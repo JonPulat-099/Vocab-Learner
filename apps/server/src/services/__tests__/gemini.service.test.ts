@@ -2,13 +2,13 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { WordSummarySchema } from "@vocab/shared";
-import { createGeminiService, GeminiUnavailable, type GeminiClient } from "./gemini.service.js";
-import { buildRawSummary } from "./raw-summary.js";
-import { parseMw } from "./mw.service.js";
-import { parseCambridge } from "./cambridge.service.js";
+import { createGeminiService, GeminiUnavailable, type GeminiClient } from "../gemini.service.js";
+import { buildRawSummary } from "../raw-summary.js";
+import { parseMw } from "../mw.service.js";
+import { parseCambridge } from "../cambridge.service.js";
 
 const fixture = (name: string): string =>
-  readFileSync(path.join(import.meta.dirname, "../../fixtures", name), "utf8");
+  readFileSync(path.join(import.meta.dirname, "../../../fixtures", name), "utf8");
 
 const feelingSummary = {
   word: "feeling",

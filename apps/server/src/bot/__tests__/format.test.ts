@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { WordSummary } from "@vocab/shared";
-import { escapeHtml, formatCard, TELEGRAM_MESSAGE_LIMIT } from "./format.js";
+import { escapeHtml, formatCard, TELEGRAM_MESSAGE_LIMIT } from "../format.js";
 
 const feeling: WordSummary = {
   word: "feeling",

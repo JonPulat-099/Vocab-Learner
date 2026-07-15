@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { fetchCambridge, parseCambridge } from "./cambridge.service.js";
+import { fetchCambridge, parseCambridge } from "../cambridge.service.js";
 
 const fixture = (name: string): string =>
-  readFileSync(path.join(import.meta.dirname, "../../fixtures", name), "utf8");
+  readFileSync(path.join(import.meta.dirname, "../../../fixtures", name), "utf8");
 
 describe("parseCambridge", () => {
   it("parses feeling: multi-sense entry with guidewords, defs, RU translations", () => {

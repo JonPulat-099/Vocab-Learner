@@ -2,10 +2,10 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createWordsRepo, normalizeWord, type WordRow } from "./words.repo.js";
+import { createWordsRepo, normalizeWord, type WordRow } from "../words.repo.js";
 
 const fixture = (name: string): string =>
-  readFileSync(path.join(import.meta.dirname, "../../fixtures", name), "utf8");
+  readFileSync(path.join(import.meta.dirname, "../../../fixtures", name), "utf8");
 
 /** In-memory fake of the supabase query chains used by words.repo. */
 function fakeSupabase(store: Map<string, WordRow>) {
