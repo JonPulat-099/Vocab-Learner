@@ -45,16 +45,16 @@
 - [x] **2.2 Raw-card fallback**
   `buildRawSummary(mw, cambridge)` → `WordSummary` without Gemini (best-effort sense grouping from Cambridge structure).
   *Done when:* search still produces a card when Gemini throws.
-- [ ] **2.3 Bot skeleton** (`apps/server/src/bot/`)
+- [x] **2.3 Bot skeleton** (`apps/server/src/bot/`)
   grammY inside Fastify via `webhookCallback(bot, "fastify")`; `BOT_MODE` switch (polling/webhook); `OWNER_TG_ID` guard middleware; `/start` upserts user.
   *Done when:* bot answers `/start` locally in polling mode, ignores other tg ids.
-- [ ] **2.4 Search flow**
+- [x] **2.4 Search flow**
   Plain text + `/search` → send "⏳" placeholder → `getOrFetchWord` → Gemini/fallback → edit placeholder with card. Store `chat_id` + both message ids in `search_history`.
   *Done when:* end-to-end search works in dev; `search_history` row contains both message ids.
-- [ ] **2.5 Card renderer** (`bot/format.ts`)
+- [x] **2.5 Card renderer** (`bot/format.ts`)
   HTML parse mode, format from plan §4: header `📖 word (forms) /IPA/ [pos] · CEFR`, Roman-numeral senses `(GUIDEWORD) def — RU`, numbered EN examples. Truncate at 4096 chars (~5 senses × 3 examples) → append "🌐 Full entry on site" URL button.
   *Done when:* snapshot test for `feeling` matches the target layout; long word truncates without breaking HTML tags.
-- [ ] **2.6 "Did you mean"**
+- [x] **2.6 "Did you mean"**
   MW suggestions → inline buttons (max 6) that re-trigger search.
   *Done when:* typo `feelling` offers `feeling` button and it works.
 
