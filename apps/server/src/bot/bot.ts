@@ -350,12 +350,17 @@ export function createBot(deps: BotDeps): Bot {
     const keyboard = new InlineKeyboard();
     if (saved) keyboard.text(texts.buttons.saved, `saved:${row.id}`);
     else keyboard.text(texts.buttons.save, `save:${row.id}`);
-    keyboard
-      .url(
+    // Telegram accepts web_app buttons only for https URLs — on localhost the
+    // 🎧 button stays a plain youglish.com link.
+    if (deps.webOrigin.startsWith("https://")) {
+      keyboard.webApp(texts.buttons.youglish, `${deps.webOrigin}/youglish/${encodeURIComponent(row.word)}`);
+    } else {
+      keyboard.url(
         texts.buttons.youglish,
         row.youglish_data?.link ?? `https://youglish.com/pron/${encodeURIComponent(row.word)}/english`,
-      )
-      .text(texts.buttons.clearHistory, "clear");
+      );
+    }
+    keyboard.text(texts.buttons.clearHistory, "clear");
     // Telegram rejects non-public URLs (localhost) in inline buttons — https only.
     if (truncated && deps.webOrigin.startsWith("https://")) {
       keyboard.row().url(texts.buttons.fullEntry, `${deps.webOrigin}/word/${row.id}`);

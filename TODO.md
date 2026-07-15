@@ -83,7 +83,7 @@
 - [x] **5.3 `/dictionary`** — saved words grid: word, POS, first RU gloss, CEFR chip; search box + POS filter; multi-select mode → "Practice selected".
 - [x] **5.4 `/word/:id`** — sections: AI Summary (sense-grouped, full EN+RU example pairs) · Cambridge raw · Merriam-Webster raw · YouGlish embedded widget (official JS widget, `VITE_YOUGLISH_LANG`).
 - [x] **5.5 GSAP pass 1** — staggered grid entrance, FLIP on filter, ScrollTrigger reveals on word page.
-- [ ] **5.6 YouGlish Mini App** — lightweight `/youglish/:word` page (no auth) embedding the official YouGlish widget (reuse 5.4 embed; register a widget key). Bot: 🎧 button becomes `keyboard.webApp(...)` when `WEB_ORIGIN` is https (Telegram rejects non-https web_app URLs), else keep the current plain youglish.com URL button.
+- [x] **5.6 YouGlish Mini App** — lightweight `/youglish/:word` page (no auth) embedding the official YouGlish widget (reuse 5.4 embed; register a widget key). Bot: 🎧 button becomes `keyboard.webApp(...)` when `WEB_ORIGIN` is https (Telegram rejects non-https web_app URLs), else keep the current plain youglish.com URL button.
   *Done when:* in prod, tapping 🎧 opens the player inside Telegram; in dev (localhost), button still opens youglish.com; keyboard test covers both branches.
 
 ## Phase 6 — Practice

@@ -456,3 +456,33 @@ describe("clear history (3.4)", () => {
     expect(finalEdit.payload.text).toContain("1 were too old");
   });
 });
+
+describe("🎧 button web_app branch (5.6)", () => {
+  const lookups = { feeling: { kind: "word" as const, row: feelingRow } };
+
+  function youglishButton(calls: ApiCall[]) {
+    const edit = calls.find((c) => c.method === "editMessageText")!;
+    const keyboard = (
+      edit.payload.reply_markup as {
+        inline_keyboard: Array<Array<{ text: string; url?: string; web_app?: { url: string } }>>;
+      }
+    ).inline_keyboard.flat();
+    return keyboard.find((b) => b.text.includes("YouGlish"))!;
+  }
+
+  it("uses a web_app button when WEB_ORIGIN is https", async () => {
+    const { bot, calls } = setup(lookups, "https://vocab.example.app");
+    await bot.handleUpdate(textUpdate("feeling"));
+    const button = youglishButton(calls);
+    expect(button.web_app).toEqual({ url: "https://vocab.example.app/youglish/feeling" });
+    expect(button.url).toBeUndefined();
+  });
+
+  it("keeps the plain youglish.com URL on non-https origins (dev)", async () => {
+    const { bot, calls } = setup(lookups, "http://localhost:5173");
+    await bot.handleUpdate(textUpdate("feeling"));
+    const button = youglishButton(calls);
+    expect(button.url).toBe("https://youglish.com/pron/feeling/english");
+    expect(button.web_app).toBeUndefined();
+  });
+});

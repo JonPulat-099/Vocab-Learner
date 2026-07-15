@@ -68,6 +68,17 @@ bot.api.setMyCommands([...BOT_COMMANDS]).catch((err) => {
   app.log.warn({ err }, "failed to register bot commands menu");
 });
 
+// Chat menu button opens the dictionary as a Mini App (https-only, like all web_app URLs).
+if (config.WEB_ORIGIN.startsWith("https://")) {
+  bot.api
+    .setChatMenuButton({
+      menu_button: { type: "web_app", text: "Dictionary", web_app: { url: config.WEB_ORIGIN } },
+    })
+    .catch((err) => {
+      app.log.warn({ err }, "failed to set chat menu button");
+    });
+}
+
 app.get("/healthz", async () => ({ ok: true }));
 
 if (config.BOT_MODE === "webhook") {
