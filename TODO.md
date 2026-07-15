@@ -69,8 +69,8 @@
 
 ## Phase 4 — REST API + web auth
 
-- [ ] **4.1 Fastify plugins** — `@fastify/jwt`, `@fastify/cors` (allow `WEB_ORIGIN`), zod route schemas from `@vocab/shared`.
-- [ ] **4.2 `POST /api/auth/telegram`** — verify Login Widget payload HMAC (bot token key), check `auth_date` freshness, match `tg_id` == `OWNER_TG_ID` → JWT. Plus `GET /api/me`.
+- [x] **4.1 Fastify plugins** — `@fastify/jwt`, `@fastify/cors` (allow `WEB_ORIGIN`), zod route schemas from `@vocab/shared`.
+- [x] **4.2 `POST /api/auth/telegram`** — verify Login Widget payload HMAC (bot token key), check `auth_date` freshness, match `tg_id` == `OWNER_TG_ID` → JWT. Plus `GET /api/me`. *(Also accepts Mini App `initData` — HMAC with `WebAppData` key — so the site works as a Telegram Web App; dev-only `POST /api/auth/dev` for localhost.)*
   *Done when:* forged payload → 401; valid payload → JWT that passes auth on other routes.
 - [ ] **4.3 Word routes** — `GET /api/words` (q filter), `GET /api/words/:id` (summary + all 3 raw payloads), `DELETE /api/words/:id` (unsave).
 - [ ] **4.4 History routes** — `GET /api/history`, `DELETE /api/history` (DB only; chat cleanup stays bot-side).

@@ -25,6 +25,12 @@ export function createUsersRepo(supabase: SupabaseClient) {
     return data as UserRow;
   }
 
+  async function getById(userId: string): Promise<UserRow | null> {
+    const { data, error } = await supabase.from("users").select("*").eq("id", userId).maybeSingle();
+    if (error) throw new Error(`users lookup failed: ${error.message}`);
+    return (data as UserRow | null) ?? null;
+  }
+
   async function insertSearchHistory(entry: {
     user_id: string;
     word_id: string;
@@ -78,8 +84,30 @@ export function createUsersRepo(supabase: SupabaseClient) {
     if (error) throw new Error(`search_history delete failed: ${error.message}`);
   }
 
+  /** Web history view: newest first, not deduplicated (id per row for the API). */
+  async function listHistoryItems(
+    userId: string,
+    limit: number,
+  ): Promise<Array<{ id: number; word_id: string; word: string; created_at: string }>> {
+    const { data, error } = await supabase
+      .from("search_history")
+      .select("id, word_id, created_at, words(word)")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (error) throw new Error(`search_history list failed: ${error.message}`);
+    return (data ?? []).map((row) => ({
+      id: row.id as number,
+      word_id: row.word_id as string,
+      word: (row.words as unknown as { word: string }).word,
+      created_at: row.created_at as string,
+    }));
+  }
+
   return {
     upsertUser,
+    getById,
+    listHistoryItems,
     insertSearchHistory,
     listRecentSearches,
     listSearchHistoryMessages,

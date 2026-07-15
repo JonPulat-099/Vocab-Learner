@@ -37,6 +37,15 @@ export const TelegramLoginPayloadSchema = z.object({
 });
 export type TelegramLoginPayload = z.infer<typeof TelegramLoginPayloadSchema>;
 
+/** Mini App auth: the raw `Telegram.WebApp.initData` query string, verified server-side. */
+export const InitDataAuthSchema = z.object({
+  initData: z.string().min(1),
+});
+export type InitDataAuth = z.infer<typeof InitDataAuthSchema>;
+
+export const AuthRequestSchema = z.union([InitDataAuthSchema, TelegramLoginPayloadSchema]);
+export type AuthRequest = z.infer<typeof AuthRequestSchema>;
+
 export const AuthResponseSchema = z.object({
   token: z.string(),
 });

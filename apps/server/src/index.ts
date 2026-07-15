@@ -7,6 +7,7 @@ import { createUserWordsRepo } from "./db/user-words.repo.js";
 import { createWordsRepo } from "./services/words.repo.js";
 import { createGeminiService } from "./services/gemini.service.js";
 import { BOT_COMMANDS, createBot } from "./bot/bot.js";
+import { registerApi } from "./routes/api.js";
 
 const app = Fastify({
   logger: {
@@ -34,15 +35,28 @@ const gemini = createGeminiService({
   timeoutMs: config.GEMINI_TIMEOUT_MS,
 });
 
+const usersRepo = createUsersRepo(supabase);
+const userWordsRepo = createUserWordsRepo(supabase);
+
 const bot = createBot({
   token: config.BOT_TOKEN,
   ownerTgId: config.OWNER_TG_ID,
   webOrigin: config.WEB_ORIGIN,
   wordsRepo,
-  usersRepo: createUsersRepo(supabase),
-  userWordsRepo: createUserWordsRepo(supabase),
+  usersRepo,
+  userWordsRepo,
   gemini,
   logger: app.log,
+});
+
+await registerApi(app, {
+  botToken: config.BOT_TOKEN,
+  ownerTgId: config.OWNER_TG_ID,
+  jwtSecret: config.JWT_SECRET,
+  jwtExpiresIn: config.JWT_EXPIRES_IN,
+  webOrigin: config.WEB_ORIGIN,
+  allowDevLogin: config.NODE_ENV === "development",
+  usersRepo,
 });
 
 // Populates Telegram's menu button; non-fatal if Telegram is unreachable at boot.
