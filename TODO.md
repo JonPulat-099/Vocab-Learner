@@ -60,10 +60,10 @@
 
 ## Phase 3 — Save & history
 
-- [ ] **3.1 Save button** — callback `save:{word_id}` → upsert `user_words` → edit keyboard to `✅ Saved`. Idempotent.
-- [ ] **3.2 `/mywords`** — paginated inline list (10/page), tap → re-render card from cache.
-- [ ] **3.3 `/history`** — last 10 searches, tap to re-open.
-- [ ] **3.4 Clear history (chat cleanup)**
+- [x] **3.1 Save button** — callback `save:{word_id}` → upsert `user_words` → edit keyboard to `✅ Saved`. Idempotent.
+- [x] **3.2 `/mywords`** — paginated inline list (10/page), tap → re-render card from cache.
+- [x] **3.3 `/history`** — last 10 searches, tap to re-open.
+- [x] **3.4 Clear history (chat cleanup)**
   🗑 button + `/clear` → confirm prompt (mention 48h limit) → iterate `search_history`: `deleteMessage` for query + result ids, catch-and-continue on >48h errors, small delay between batches → delete rows.
   *Done when:* fresh messages disappear from chat; old ones are skipped without crashing; table is empty after.
 
@@ -83,6 +83,8 @@
 - [ ] **5.3 `/dictionary`** — saved words grid: word, POS, first RU gloss, CEFR chip; search box + POS filter; multi-select mode → "Practice selected".
 - [ ] **5.4 `/word/:id`** — sections: AI Summary (sense-grouped, full EN+RU example pairs) · Cambridge raw · Merriam-Webster raw · YouGlish embedded widget (official JS widget, `VITE_YOUGLISH_LANG`).
 - [ ] **5.5 GSAP pass 1** — staggered grid entrance, FLIP on filter, ScrollTrigger reveals on word page.
+- [ ] **5.6 YouGlish Mini App** — lightweight `/youglish/:word` page (no auth) embedding the official YouGlish widget (reuse 5.4 embed; register a widget key). Bot: 🎧 button becomes `keyboard.webApp(...)` when `WEB_ORIGIN` is https (Telegram rejects non-https web_app URLs), else keep the current plain youglish.com URL button.
+  *Done when:* in prod, tapping 🎧 opens the player inside Telegram; in dev (localhost), button still opens youglish.com; keyboard test covers both branches.
 
 ## Phase 6 — Practice
 

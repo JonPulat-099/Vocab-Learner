@@ -129,7 +129,14 @@ export function createWordsRepo(deps: WordsRepoDeps) {
     if (error) throw new Error(`summary update failed: ${error.message}`);
   }
 
-  return { getOrFetchWord, saveSummary };
+  /** Cache-only lookup by id — used to re-open cards from /mywords and /history. */
+  async function getWordById(id: string): Promise<WordRow | null> {
+    const { data, error } = await deps.supabase.from("words").select("*").eq("id", id).maybeSingle();
+    if (error) throw new Error(`words lookup by id failed: ${error.message}`);
+    return (data as WordRow | null) ?? null;
+  }
+
+  return { getOrFetchWord, getWordById, saveSummary };
 }
 
 export type WordsRepo = ReturnType<typeof createWordsRepo>;

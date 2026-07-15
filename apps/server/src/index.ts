@@ -3,6 +3,7 @@ import { webhookCallback } from "grammy";
 import { config } from "./config.js";
 import { getSupabase } from "./db/supabase.js";
 import { createUsersRepo } from "./db/users.repo.js";
+import { createUserWordsRepo } from "./db/user-words.repo.js";
 import { createWordsRepo } from "./services/words.repo.js";
 import { createGeminiService } from "./services/gemini.service.js";
 import { BOT_COMMANDS, createBot } from "./bot/bot.js";
@@ -39,6 +40,7 @@ const bot = createBot({
   webOrigin: config.WEB_ORIGIN,
   wordsRepo,
   usersRepo: createUsersRepo(supabase),
+  userWordsRepo: createUserWordsRepo(supabase),
   gemini,
   logger: app.log,
 });
