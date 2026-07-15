@@ -1,0 +1,64 @@
+[
+  {
+    "meta": {
+      "id": "test:1",
+      "uuid": "6d4c0f8e-0000-0000-0000-000000000003",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": ["test", "tests"],
+      "offensive": false
+    },
+    "hwi": { "hw": "test", "prs": [{ "mw": "ˈtest" }] },
+    "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "sn": "1",
+                "dt": [
+                  ["text", "{bc}a means of testing: such as a procedure for critical evaluation"],
+                  ["vis", [{ "t": "put their theory to the {it}test{/it}" }]]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": ["a means of testing", "a positive result in such a test"]
+  },
+  {
+    "meta": {
+      "id": "test:2",
+      "uuid": "6d4c0f8e-0000-0000-0000-000000000004",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": ["test", "tested", "testing"],
+      "offensive": false
+    },
+    "hwi": { "hw": "test" },
+    "fl": "verb",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "sn": "1",
+                "dt": [
+                  ["text", "{bc}to put to test or proof {bc}{sx|try||}"],
+                  ["vis", [{ "t": "{it}test{/it} one's strength" }]]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": ["to put to test or proof : try", "to require a doctrinal test of"]
+  }
+]

@@ -24,7 +24,7 @@
 
 ## Phase 1 — Source services (`apps/server/src/services/`)
 
-- [ ] **1.1 `mw.service.ts`** — Merriam-Webster Collegiate API
+- [x] **1.1 `mw.service.ts`** — Merriam-Webster Collegiate API
   Fetch, parse `fl`, `shortdef[]`, `vis` examples. Detect the "suggestions array" response (unknown word) → return `{ suggestions: string[] }`.
   *Done when:* unit tests pass against saved JSON fixtures (known word, unknown word, multi-POS word).
 - [ ] **1.2 `cambridge.service.ts`** — scraper for english-russian edition

@@ -1,0 +1,92 @@
+[
+  {
+    "meta": {
+      "id": "feeling:1",
+      "uuid": "6d4c0f8e-0000-0000-0000-000000000001",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": ["feeling", "feelings"],
+      "offensive": false
+    },
+    "hwi": { "hw": "feel*ing", "prs": [{ "mw": "ˈfē-liŋ" }] },
+    "fl": "noun",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "sn": "1 a",
+                "dt": [
+                  ["text", "{bc}the one of the basic physical senses of which the skin contains the chief end organs"],
+                  ["vis", [{ "t": "lost all {it}feeling{/it} in his fingers" }]]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "2",
+                "dt": [
+                  ["text", "{bc}an emotional state or reaction"],
+                  ["vis", [{ "t": "a {it}feeling{/it} of joy" }, { "t": "guilty {it}feelings{/it}" }]]
+                ]
+              }
+            ]
+          ],
+          [
+            [
+              "sense",
+              {
+                "sn": "3",
+                "dt": [
+                  ["text", "{bc}unreasoned opinion or belief {bc}{sx|premonition||}"],
+                  ["vis", [{ "t": "I have a {it}feeling{/it} that we should wait." }]]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": [
+      "the one of the basic physical senses of which the skin contains the chief end organs",
+      "an emotional state or reaction",
+      "unreasoned opinion or belief"
+    ]
+  },
+  {
+    "meta": {
+      "id": "feeling:2",
+      "uuid": "6d4c0f8e-0000-0000-0000-000000000002",
+      "src": "collegiate",
+      "section": "alpha",
+      "stems": ["feeling", "feelingly"],
+      "offensive": false
+    },
+    "hwi": { "hw": "feel*ing" },
+    "fl": "adjective",
+    "def": [
+      {
+        "sseq": [
+          [
+            [
+              "sense",
+              {
+                "sn": "1",
+                "dt": [
+                  ["text", "{bc}{sx|sentient||} {bc}capable of feeling"],
+                  ["vis", [{ "t": "a {it}feeling{/it} heart" }]]
+                ]
+              }
+            ]
+          ]
+        ]
+      }
+    ],
+    "shortdef": ["sentient; capable of feeling", "expressing emotion or sensitivity"]
+  }
+]
