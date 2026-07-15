@@ -30,7 +30,7 @@
 - [x] **1.2 `cambridge.service.ts`** — scraper for english-russian edition
   cheerio; ALL selectors in one exported `SELECTORS` config object. Extract per entry: POS, guideword (`dsense_gw`), EN def, RU translation, examples. Realistic UA/Accept-Language headers.
   *Done when:* tests pass against saved HTML fixtures (`feeling`, one single-sense word, one miss/404).
-- [ ] **1.3 `youglish.service.ts`** — Tier 1
+- [x] **1.3 `youglish.service.ts`** — Tier 1
   Interface `getYouglish(word)` returning `{ link }` now; leave a stubbed Tier 2 branch behind `YOUGLISH_API_KEY`.
   *Done when:* returns correct deep link `https://youglish.com/pron/{word}/english`.
 - [ ] **1.4 `words.repo.ts`** — cache layer
