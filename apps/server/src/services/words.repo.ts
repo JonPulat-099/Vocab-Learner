@@ -31,6 +31,10 @@ export interface WordsRepoDeps {
   sourceTimeoutMs: number;
   cacheTtlDays: number;
   fetchImpl?: typeof fetch;
+  logger?: {
+    info(obj: Record<string, unknown>, msg?: string): void;
+    warn(obj: Record<string, unknown>, msg?: string): void;
+  };
 }
 
 export function normalizeWord(input: string): string {
@@ -54,9 +58,11 @@ export function createWordsRepo(deps: WordsRepoDeps) {
       .maybeSingle();
     if (lookupError) throw new Error(`words lookup failed: ${lookupError.message}`);
     if (cached && isFresh(cached.fetched_at)) {
+      deps.logger?.info({ word }, "cache hit — no external requests");
       return { kind: "word", row: cached as WordRow };
     }
 
+    deps.logger?.info({ word }, "cache miss — fetching sources");
     const [mw, cambridge, youglish] = await Promise.allSettled([
       fetchMwRaw(word, {
         apiKey: deps.mwApiKey,
@@ -78,6 +84,18 @@ export function createWordsRepo(deps: WordsRepoDeps) {
         ? cambridge.value
         : null;
     const youglishData = youglish.status === "fulfilled" ? youglish.value : null;
+
+    deps.logger?.info(
+      {
+        word,
+        mw: mw.status === "fulfilled" ? mwParsed.kind : `failed: ${String(mw.reason)}`,
+        cambridge:
+          cambridge.status === "fulfilled"
+            ? cambridge.value.kind
+            : `failed: ${String(cambridge.reason)}`,
+      },
+      "sources fetched",
+    );
 
     const hasContent = mwParsed.kind === "entries" || cambridgeData !== null;
     if (!hasContent) {

@@ -7,7 +7,14 @@ import { createWordsRepo } from "./services/words.repo.js";
 import { createGeminiService } from "./services/gemini.service.js";
 import { createBot } from "./bot/bot.js";
 
-const app = Fastify({ logger: { level: config.LOG_LEVEL } });
+const app = Fastify({
+  logger: {
+    level: config.LOG_LEVEL,
+    ...(config.NODE_ENV === "development"
+      ? { transport: { target: "pino-pretty", options: { translateTime: "HH:MM:ss" } } }
+      : {}),
+  },
+});
 const supabase = getSupabase();
 
 const wordsRepo = createWordsRepo({
@@ -17,6 +24,7 @@ const wordsRepo = createWordsRepo({
   youglishApiKey: config.YOUGLISH_API_KEY,
   sourceTimeoutMs: config.SOURCE_TIMEOUT_MS,
   cacheTtlDays: config.WORD_CACHE_TTL_DAYS,
+  logger: app.log,
 });
 
 const gemini = createGeminiService({
@@ -32,6 +40,7 @@ const bot = createBot({
   wordsRepo,
   usersRepo: createUsersRepo(supabase),
   gemini,
+  logger: app.log,
 });
 
 app.get("/healthz", async () => ({ ok: true }));

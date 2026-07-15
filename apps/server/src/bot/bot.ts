@@ -11,6 +11,15 @@ import { texts } from "./texts.js";
 
 const MAX_SUGGESTIONS = 6;
 
+/** Minimal logger surface (pino-compatible). */
+export interface BotLogger {
+  info(obj: Record<string, unknown> | string, msg?: string): void;
+  warn(obj: Record<string, unknown> | string, msg?: string): void;
+  error(obj: Record<string, unknown> | string, msg?: string): void;
+}
+
+const noopLogger: BotLogger = { info() {}, warn() {}, error() {} };
+
 export interface BotDeps {
   token: string;
   ownerTgId: number;
@@ -18,14 +27,19 @@ export interface BotDeps {
   wordsRepo: WordsRepo;
   usersRepo: UsersRepo;
   gemini: GeminiService;
+  logger?: BotLogger;
 }
 
 export function createBot(deps: BotDeps): Bot {
   const bot = new Bot(deps.token);
+  const log = deps.logger ?? noopLogger;
 
   // Single-user guard: silently drop updates from anyone but the owner.
   bot.use(async (ctx, next) => {
-    if (ctx.from?.id !== deps.ownerTgId) return;
+    if (ctx.from?.id !== deps.ownerTgId) {
+      log.warn({ tg_id: ctx.from?.id }, "ignored update from non-owner");
+      return;
+    }
     await next();
   });
 
@@ -60,14 +74,16 @@ export function createBot(deps: BotDeps): Bot {
   });
 
   bot.catch((err) => {
-    console.error("bot error:", err.error);
+    log.error({ err: err.error }, "bot error");
   });
 
   async function runSearch(ctx: Context, word: string): Promise<void> {
     const chatId = ctx.chatId!;
+    log.info({ word }, "search started");
     const placeholder = await ctx.api.sendMessage(chatId, texts.searching);
     try {
       const lookup = await deps.wordsRepo.getOrFetchWord(word);
+      log.info({ word, result: lookup.kind }, "lookup finished");
 
       if (lookup.kind === "suggestions") {
         const keyboard = new InlineKeyboard();
@@ -104,7 +120,7 @@ export function createBot(deps: BotDeps): Bot {
         });
       }
     } catch (err) {
-      console.error("search failed:", err);
+      log.error({ word, err }, "search failed");
       await ctx.api
         .editMessageText(chatId, placeholder.message_id, texts.searchError)
         .catch(() => {});
@@ -112,7 +128,10 @@ export function createBot(deps: BotDeps): Bot {
   }
 
   async function resolveSummary(row: WordRow): Promise<WordSummary> {
-    if (row.summary) return row.summary;
+    if (row.summary) {
+      log.info({ word: row.word }, "summary served from cache");
+      return row.summary;
+    }
     const mw = parseMw(row.mw_data);
     try {
       const summary = await deps.gemini.summarizeWord({
@@ -121,10 +140,11 @@ export function createBot(deps: BotDeps): Bot {
         cambridge: row.cambridge_data,
       });
       await deps.wordsRepo.saveSummary(row.id, summary);
+      log.info({ word: row.word }, "gemini summary generated and cached");
       return summary;
     } catch (err) {
       if (err instanceof GeminiUnavailable) {
-        console.error(err.message);
+        log.warn({ word: row.word, err: err.message }, "gemini unavailable — raw fallback card");
         // Not cached — next search retries Gemini.
         return buildRawSummary(row.word, mw, row.cambridge_data);
       }
