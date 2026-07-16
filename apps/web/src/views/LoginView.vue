@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import type { TelegramLoginPayload } from "@vocab/shared";
 import { getTelegramWebApp } from "../lib/telegram.js";
 import { useAuthStore } from "../stores/auth.js";
+import ThemeToggle from "../components/ThemeToggle.vue";
 
 const auth = useAuthStore();
 const route = useRoute();
@@ -60,10 +61,14 @@ declare global {
 </script>
 
 <template>
-  <main class="flex min-h-dvh flex-col items-center justify-center px-6 text-center">
-    <p class="font-entry text-5xl leading-none">Aa</p>
-    <h1 class="font-entry mt-4 text-3xl">Vocab Learner</h1>
-    <p class="mt-2 max-w-xs text-sm text-hint">
+  <main class="relative flex min-h-dvh flex-col items-center justify-center px-8 text-center">
+    <div class="absolute right-5 top-5">
+      <ThemeToggle />
+    </div>
+
+    <p class="font-entry text-[56px] leading-none text-accent">Aa</p>
+    <h1 class="mt-4 font-display text-[28px] font-bold text-ink">Vocab Learner</h1>
+    <p class="mt-1.5 max-w-xs text-sm leading-relaxed text-ink-3">
       Your saved words, full dictionary entries and flashcards — signed in with Telegram.
     </p>
 
@@ -74,7 +79,7 @@ declare global {
 
     <button
       v-if="isDev"
-      class="mt-6 rounded-lg bg-section px-4 py-2 text-sm text-hint"
+      class="mt-3.5 h-10 cursor-pointer px-4 text-[13px] text-hint"
       :disabled="busy"
       @click="finishLogin(() => auth.loginDev())"
     >

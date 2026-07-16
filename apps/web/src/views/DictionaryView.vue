@@ -5,6 +5,8 @@ import type { WordListItem } from "@vocab/shared";
 import { useApi } from "../lib/api.js";
 import { Flip, gsap, motionOK } from "../lib/motion.js";
 import { usePracticeStore } from "../stores/practice.js";
+import CefrTag from "../components/CefrTag.vue";
+import ThemeToggle from "../components/ThemeToggle.vue";
 
 const api = useApi();
 const router = useRouter();
@@ -99,29 +101,41 @@ onMounted(load);
 </script>
 
 <template>
-  <main class="mx-auto max-w-2xl px-4 pb-24 pt-4">
-    <header class="flex items-baseline justify-between gap-2">
-      <h1 class="font-entry text-2xl">My dictionary</h1>
-      <button
-        v-if="words.length"
-        class="text-sm text-link"
-        @click="toggleSelectMode"
-      >
-        {{ selectMode ? "Done" : "Select" }}
-      </button>
+  <main class="mx-auto max-w-[900px] px-[clamp(16px,5vw,40px)] pb-32 pt-[clamp(16px,4vw,40px)]">
+    <header class="flex flex-wrap items-baseline justify-between gap-3">
+      <h1 class="font-entry text-[28px] text-ink">My dictionary</h1>
+      <div class="flex items-center gap-2.5">
+        <button
+          v-if="words.length"
+          class="cursor-pointer text-sm font-semibold text-accent"
+          @click="toggleSelectMode"
+        >
+          {{ selectMode ? "Done" : "Select" }}
+        </button>
+        <ThemeToggle />
+      </div>
     </header>
 
-    <input
-      v-model="search"
-      type="search"
-      placeholder="Search your words"
-      class="mt-3 w-full rounded-xl bg-section px-4 py-2.5 text-base outline-none placeholder:text-hint focus:ring-2 focus:ring-accent"
-    />
+    <div class="relative mt-4">
+      <svg
+        width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-hint"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <path d="m21 21-4.3-4.3" />
+      </svg>
+      <input
+        v-model="search"
+        type="search"
+        placeholder="Search your words"
+        class="h-[46px] w-full rounded-[14px] border border-separator bg-section pl-[42px] pr-4 text-[15px] text-ink outline-none placeholder:text-hint focus:ring-2 focus:ring-accent"
+      />
+    </div>
 
-    <div v-if="posOptions.length > 1" class="mt-3 flex flex-wrap gap-2" data-pos-filter>
+    <div v-if="posOptions.length > 1" class="mt-3.5 flex flex-wrap gap-2" data-pos-filter>
       <button
-        class="rounded-full px-3 py-1 text-sm"
-        :class="posFilter === null ? 'bg-accent text-on-accent' : 'bg-section text-hint'"
+        class="h-9 cursor-pointer rounded-full px-4 text-[13px] font-semibold"
+        :class="posFilter === null ? 'bg-accent text-on-accent' : 'border border-separator bg-section text-ink-2'"
         @click="posFilter = null"
       >
         all
@@ -129,74 +143,80 @@ onMounted(load);
       <button
         v-for="pos in posOptions"
         :key="pos"
-        class="rounded-full px-3 py-1 text-sm"
-        :class="posFilter === pos ? 'bg-accent text-on-accent' : 'bg-section text-hint'"
+        class="h-9 cursor-pointer rounded-full px-4 text-[13px] font-semibold"
+        :class="posFilter === pos ? 'bg-accent text-on-accent' : 'border border-separator bg-section text-ink-2'"
         @click="posFilter = posFilter === pos ? null : pos"
       >
         {{ pos }}
       </button>
     </div>
 
-    <p v-if="loading" class="mt-10 text-center text-hint">Loading your words…</p>
-    <p v-else-if="error" class="mt-10 text-center text-danger">{{ error }}</p>
+    <p v-if="loading" class="mt-14 text-center text-sm text-hint">Loading your words…</p>
 
-    <div v-else-if="words.length === 0" class="mt-14 text-center">
-      <p class="font-entry text-4xl">Aa</p>
-      <p class="mt-3 text-hint">
+    <div v-else-if="error" class="mt-14 text-center">
+      <p class="mx-auto mb-3.5 max-w-[340px] text-sm text-danger">{{ error }}</p>
+      <button
+        class="grad-cta h-[42px] cursor-pointer rounded-[14px] px-5 text-sm font-semibold text-white"
+        @click="load"
+      >
+        Try again
+      </button>
+    </div>
+
+    <div v-else-if="words.length === 0" class="mt-16 text-center">
+      <p class="font-entry text-[40px] text-ink-3">Aa</p>
+      <p class="mx-auto mt-3 max-w-xs text-sm text-ink-3">
         No saved words yet. Send any English word to the bot and tap 💾 Save — it shows up here.
       </p>
     </div>
 
-    <p v-else-if="visible.length === 0" class="mt-10 text-center text-hint">
+    <p v-else-if="visible.length === 0" class="mt-12 text-center text-sm text-hint">
       Nothing matches “{{ search }}”{{ posFilter ? ` in ${posFilter}` : "" }}.
     </p>
 
-    <ul v-else class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2" data-word-grid>
+    <ul v-else class="mt-5 grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-2.5" data-word-grid>
       <li v-for="w in visible" :key="w.id" :data-word-id="w.id">
         <button
-          class="w-full rounded-xl bg-section px-4 py-3 text-left transition-shadow"
-          :class="selectMode && selected.has(w.id) ? 'ring-2 ring-accent' : ''"
+          class="flex w-full cursor-pointer flex-col gap-1 rounded-2xl bg-section px-[18px] py-3.5 text-left transition-[transform,box-shadow] duration-200"
+          :class="selectMode && selected.has(w.id) ? 'ring-2 ring-accent -translate-y-0.5' : ''"
           @click="openOrToggle(w)"
         >
           <span class="flex items-baseline justify-between gap-2">
-            <span class="font-entry text-lg">{{ w.word }}</span>
-            <span
-              v-if="w.cefr_guess"
-              class="rounded-md bg-accent/15 px-1.5 py-0.5 text-xs font-medium text-link"
-            >
-              {{ w.cefr_guess }}
-            </span>
+            <span class="font-entry text-[17px] text-ink">{{ w.word }}</span>
+            <CefrTag v-if="w.cefr_guess" :level="w.cefr_guess" />
           </span>
-          <span class="mt-0.5 flex items-baseline gap-2 text-sm">
-            <span v-if="w.part_of_speech" class="uppercase tracking-wide text-hint text-xs">
+          <span class="flex items-baseline gap-2 text-[13px]">
+            <span v-if="w.part_of_speech" class="text-[11px] uppercase tracking-wider text-hint">
               {{ w.part_of_speech }}
             </span>
-            <span v-if="w.translation_ru" class="italic text-hint">{{ w.translation_ru }}</span>
+            <span v-if="w.translation_ru" class="italic text-ink-3">{{ w.translation_ru }}</span>
           </span>
         </button>
       </li>
     </ul>
 
-    <!-- Practice actions: fixed footer, native-button colors. -->
+    <!-- Practice actions: fixed bar over a bottom gradient fade. -->
     <footer
       v-if="!loading && words.length"
-      class="fixed inset-x-0 bottom-0 mx-auto flex max-w-2xl gap-2 bg-base/90 px-4 py-3 backdrop-blur"
+      class="pointer-events-none fixed inset-x-0 bottom-0 flex justify-center bg-[linear-gradient(to_top,var(--bg-app)_55%,transparent)] p-4"
     >
-      <button
-        v-if="selectMode"
-        class="flex-1 rounded-xl bg-accent px-4 py-2.5 font-medium text-on-accent disabled:opacity-50"
-        :disabled="selected.size === 0"
-        @click="practiceSelected"
-      >
-        Practice selected ({{ selected.size }})
-      </button>
-      <button
-        v-else
-        class="flex-1 rounded-xl bg-accent px-4 py-2.5 font-medium text-on-accent"
-        @click="practiceAll"
-      >
-        Practice all
-      </button>
+      <div class="pointer-events-auto flex w-full max-w-[900px] gap-2.5">
+        <button
+          v-if="selectMode"
+          class="grad-cta h-12 flex-1 cursor-pointer rounded-2xl text-[15px] font-bold text-white disabled:opacity-50"
+          :disabled="selected.size === 0"
+          @click="practiceSelected"
+        >
+          Practice selected ({{ selected.size }})
+        </button>
+        <button
+          v-else
+          class="grad-cta h-12 flex-1 cursor-pointer rounded-2xl text-[15px] font-bold text-white"
+          @click="practiceAll"
+        >
+          Practice all
+        </button>
+      </div>
     </footer>
   </main>
 </template>
