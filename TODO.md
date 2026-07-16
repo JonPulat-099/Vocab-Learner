@@ -96,7 +96,7 @@
 
 ## Phase 7 — Deploy (free tier)
 
-- [ ] **7.1 Dockerfile** for `apps/server` (multi-stage, node:22-slim, pnpm deploy --prod).
+- [x] **7.1 Dockerfile** for `apps/server` (multi-stage, node:22-slim, pnpm deploy --prod). *(`pnpm deploy --legacy` — pnpm ≥10 needs it without inject-workspace-packages; server ships `dist` only via `files` field.)*
 - [ ] **7.2 GitHub Actions** — build image on push to `main`, push to registry, trigger Koyeb deploy (build in CI, not on Koyeb's 0.1 vCPU).
 - [ ] **7.3 Koyeb service** — env vars, `BOT_MODE=webhook`, health check route `GET /healthz`; register webhook `https://<app>.koyeb.app/webhook/<WEBHOOK_SECRET>` with `secret_token`.
 - [ ] **7.4 Cloudflare Pages** — deploy `apps/web` build; set `VITE_API_URL` to Koyeb URL; update `WEB_ORIGIN`; BotFather `/setdomain` with the Pages domain.
