@@ -97,7 +97,7 @@
 ## Phase 7 — Deploy (free tier)
 
 - [x] **7.1 Dockerfile** for `apps/server` (multi-stage, node:22-slim, pnpm deploy --prod). *(`pnpm deploy --legacy` — pnpm ≥10 needs it without inject-workspace-packages; server ships `dist` only via `files` field.)*
-- [ ] **7.2 GitHub Actions** — build image on push to `main`, push to registry, trigger Koyeb deploy (build in CI, not on Koyeb's 0.1 vCPU).
+- [x] **7.2 GitHub Actions** — build image on push to `main`, push to registry, trigger Koyeb deploy (build in CI, not on Koyeb's 0.1 vCPU). *(`.github/workflows/deploy.yml`: test → GHCR push (`ghcr.io/<repo>/server`) → `koyeb services redeploy`; deploy job skipped until `KOYEB_API_TOKEN` secret exists, app/service names via `KOYEB_APP`/`KOYEB_SERVICE` repo variables.)*
 - [ ] **7.3 Koyeb service** — env vars, `BOT_MODE=webhook`, health check route `GET /healthz`; register webhook `https://<app>.koyeb.app/webhook/<WEBHOOK_SECRET>` with `secret_token`.
 - [ ] **7.4 Cloudflare Pages** — deploy `apps/web` build; set `VITE_API_URL` to Koyeb URL; update `WEB_ORIGIN`; BotFather `/setdomain` with the Pages domain.
 - [ ] **7.5 Smoke test prod** — search, save, clear (48h path), login on site, open word, run a practice session.
