@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type { PracticeCard } from "@vocab/shared";
+import type { PracticeCard, PracticeReview } from "@vocab/shared";
 import { useApi } from "../lib/api.js";
 
 export type SessionStatus = "idle" | "loading" | "error" | "active" | "finished";
@@ -29,6 +29,8 @@ export const usePracticeStore = defineStore("practice", () => {
   const known = ref<PracticeCard[]>([]);
   const needsWork = ref<PracticeCard[]>([]);
   const status = ref<SessionStatus>("idle");
+  /** Reviews whose POST failed — retried after later grades and on results. */
+  const failedReviews = ref<PracticeReview[]>([]);
 
   const current = computed(() => cards.value[index.value] ?? null);
   const total = computed(() => cards.value.length);
@@ -63,12 +65,37 @@ export const usePracticeStore = defineStore("practice", () => {
     }
   }
 
+  async function postReview(review: PracticeReview): Promise<boolean> {
+    try {
+      await api.post("/api/practice/review", review);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** Re-send earlier failures one at a time; stop at the first miss. */
+  async function flushFailedReviews(): Promise<void> {
+    while (failedReviews.value.length) {
+      const next = failedReviews.value[0];
+      if (!(await postReview(next))) return;
+      failedReviews.value.shift();
+    }
+  }
+
   function grade(g: Grade): void {
     const card = current.value;
     if (!card || status.value !== "active") return;
     (g === 1 ? known : needsWork).value.push(card);
     if (index.value + 1 >= total.value) status.value = "finished";
     else index.value += 1;
+
+    // Optimistic: the UI advanced already; persistence catches up in the background.
+    const review: PracticeReview = { user_word_id: card.user_word_id, grade: g, mode: "flashcard" };
+    void postReview(review).then(async (ok) => {
+      if (!ok) failedReviews.value.push(review);
+      else await flushFailedReviews();
+    });
   }
 
   function retryNeedsWork(): void {
@@ -97,11 +124,13 @@ export const usePracticeStore = defineStore("practice", () => {
     known,
     needsWork,
     status,
+    failedReviews,
     current,
     total,
     progressPct,
     startSession,
     grade,
+    flushFailedReviews,
     retryNeedsWork,
     reset,
   };
