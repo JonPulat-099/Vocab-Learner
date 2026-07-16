@@ -39,7 +39,8 @@ const noopLogger: BotLogger = { info() {}, warn() {}, error() {} };
 
 export interface BotDeps {
   token: string;
-  ownerTgId: number;
+  /** Unset = no single-user guard; the bot answers any Telegram user. */
+  ownerTgId?: number;
   webOrigin: string;
   wordsRepo: WordsRepo;
   usersRepo: UsersRepo;
@@ -54,9 +55,10 @@ export function createBot(deps: BotDeps): Bot {
   const bot = new Bot(deps.token);
   const log = deps.logger ?? noopLogger;
 
-  // Single-user guard: silently drop updates from anyone but the owner.
+  // Single-user guard (only when ownerTgId is configured): silently drop
+  // updates from anyone but the owner.
   bot.use(async (ctx, next) => {
-    if (ctx.from?.id !== deps.ownerTgId) {
+    if (deps.ownerTgId !== undefined && ctx.from?.id !== deps.ownerTgId) {
       log.warn({ tg_id: ctx.from?.id }, "ignored update from non-owner");
       return;
     }

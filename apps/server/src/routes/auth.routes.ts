@@ -5,7 +5,8 @@ import { verifyInitData, verifyLoginWidget } from "../auth/verify-telegram.js";
 
 export interface AuthRoutesDeps {
   botToken: string;
-  ownerTgId: number;
+  /** Unset = no single-user guard; any verified Telegram user gets a token. */
+  ownerTgId?: number;
   allowDevLogin: boolean;
   usersRepo: UsersRepo;
 }
@@ -26,8 +27,8 @@ export function registerAuthRoutes(app: FastifyInstance, deps: AuthRoutesDeps): 
       req.log.warn({ reason: result.reason }, "telegram auth rejected");
       return reply.code(401).send({ error: "invalid auth payload" });
     }
-    // Single-user app: nobody but the owner gets a token.
-    if (result.user.tg_id !== deps.ownerTgId) {
+    // Single-user guard (only when ownerTgId is configured).
+    if (deps.ownerTgId !== undefined && result.user.tg_id !== deps.ownerTgId) {
       req.log.warn({ tg_id: result.user.tg_id }, "auth attempt from non-owner");
       return reply.code(403).send({ error: "forbidden" });
     }
@@ -42,10 +43,12 @@ export function registerAuthRoutes(app: FastifyInstance, deps: AuthRoutesDeps): 
     return response;
   });
 
-  if (deps.allowDevLogin) {
+  const devLoginTgId = deps.ownerTgId;
+  if (deps.allowDevLogin && devLoginTgId !== undefined) {
     // Local dev only: Telegram widgets/Mini Apps can't sign in on localhost.
+    // Needs OWNER_TG_ID — the dev token has to impersonate a concrete user.
     app.post("/api/auth/dev", async (_req, reply) => {
-      const user = await deps.usersRepo.upsertUser({ id: deps.ownerTgId });
+      const user = await deps.usersRepo.upsertUser({ id: devLoginTgId });
       const token = await reply.jwtSign({ sub: user.id, tg_id: user.tg_id });
       const response: AuthResponse = { token };
       return response;

@@ -34,7 +34,8 @@ declare module "fastify" {
 
 export interface ApiDeps {
   botToken: string;
-  ownerTgId: number;
+  /** Unset = no single-user guard. */
+  ownerTgId?: number;
   jwtSecret: string;
   jwtExpiresIn: string;
   webOrigin: string;

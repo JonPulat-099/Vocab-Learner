@@ -44,11 +44,11 @@ interface ApiCall {
 function setup(
   lookups: Record<string, WordLookup>,
   webOrigin = "http://localhost:5173",
-  opts: { failDeleteIds?: number[] } = {},
+  opts: { failDeleteIds?: number[]; openMode?: boolean } = {},
 ) {
   const deps = {
     token: "test:token",
-    ownerTgId: OWNER,
+    ownerTgId: opts.openMode ? undefined : OWNER,
     webOrigin,
     wordsRepo: {
       getOrFetchWord: vi.fn(async (w: string) => lookups[w] ?? { kind: "not_found" as const }),
@@ -147,6 +147,12 @@ describe("bot", () => {
     const { bot, calls } = setup({});
     await bot.handleUpdate(textUpdate("/start", 999));
     expect(calls).toHaveLength(0);
+  });
+
+  it("answers any tg id when ownerTgId is unset", async () => {
+    const { bot, calls } = setup({}, "http://localhost:5173", { openMode: true });
+    await bot.handleUpdate(textUpdate("/start", 999));
+    expect(calls.map((c) => c.method)).toContain("sendMessage");
   });
 
   it("/start upserts the user and replies", async () => {

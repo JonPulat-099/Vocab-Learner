@@ -8,7 +8,8 @@ const EnvSchema = z.object({
   BOT_MODE: z.enum(["polling", "webhook"]).default("polling"),
   WEBHOOK_URL: z.string().url().optional(),
   WEBHOOK_SECRET: z.string().min(1).default("dev-webhook-secret"),
-  OWNER_TG_ID: z.coerce.number().int(),
+  // Unset = single-user guard off: bot and web auth accept any Telegram user.
+  OWNER_TG_ID: z.coerce.number().int().optional(),
 
   MW_API_KEY: z.string().min(1),
   CAMBRIDGE_BASE_URL: z

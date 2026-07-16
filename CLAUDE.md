@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Vocab Learner — Telegram bot + website for English vocabulary (EN/RU). Single user.
+Vocab Learner — Telegram bot + website for English vocabulary (EN/RU). Multi-user capable; optional single-user lock via `OWNER_TG_ID`.
 
 ## What this is
 
@@ -25,7 +25,7 @@ pnpm -r lint
 - **Cache-first.** `words` table caches raw source payloads + Gemini summary per word, forever (`WORD_CACHE_TTL_DAYS=0`). A word costs external calls exactly once. Never bypass `words.repo.getOrFetchWord()`.
 - **Graceful degradation.** Sources run in `Promise.allSettled` with `SOURCE_TIMEOUT_MS`. Gemini failure → `buildRawSummary()` fallback. A search must never hard-fail because one source is down.
 - **All DB access server-side** via `SUPABASE_SERVICE_ROLE_KEY`. The web app never imports supabase-js — it talks to `/api/*` with a JWT.
-- **Single-user guard.** Bot middleware ignores any `tg_id !== OWNER_TG_ID`; `/api/auth/telegram` rejects other ids too.
+- **Single-user guard (optional).** When `OWNER_TG_ID` is set, bot middleware ignores any `tg_id !== OWNER_TG_ID` and `/api/auth/telegram` rejects other ids. Leave it blank to open the bot + web to any Telegram user (each user's data is keyed by their own `tg_id`).
 
 ## Data shape
 

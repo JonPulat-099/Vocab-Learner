@@ -46,6 +46,17 @@ describe("POST /api/auth/telegram", () => {
     expect(res.statusCode).toBe(403);
   });
 
+  it("issues a JWT to any verified user when ownerTgId is unset", async () => {
+    app = await buildTestApp({ ownerTgId: undefined });
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/auth/telegram",
+      payload: { initData: signedInitData(999) },
+    });
+    expect(res.statusCode).toBe(200);
+    expect((res.json() as { token: string }).token).toBeTruthy();
+  });
+
   it("rejects garbage bodies with 400", async () => {
     app = await buildTestApp();
     const res = await app.inject({
@@ -100,5 +111,11 @@ describe("POST /api/auth/dev", () => {
     const res = await app.inject({ method: "POST", url: "/api/auth/dev" });
     expect(res.statusCode).toBe(200);
     expect((res.json() as { token: string }).token).toBeTruthy();
+  });
+
+  it("is not registered when ownerTgId is unset, even with allowDevLogin", async () => {
+    app = await buildTestApp({ allowDevLogin: true, ownerTgId: undefined });
+    const res = await app.inject({ method: "POST", url: "/api/auth/dev" });
+    expect(res.statusCode).toBe(404);
   });
 });
