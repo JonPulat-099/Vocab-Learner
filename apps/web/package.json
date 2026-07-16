@@ -10,6 +10,8 @@
     "test": "echo \"no tests\""
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource/sora": "^5.2.8",
     "@vocab/shared": "workspace:*",
     "pinia": "^3.0.4",
     "vue": "^3.5.0",

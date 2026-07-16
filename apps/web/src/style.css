@@ -1,50 +1,125 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource/sora/600.css";
+@import "@fontsource/sora/700.css";
 @import "tailwindcss";
 
 /*
- * Theme tokens. Inside Telegram the --tg-theme-* variables are injected by
- * telegram-web-app.js and the app inherits the user's Telegram theme.
- * In a plain browser the --fb-* fallbacks apply (light/dark via media query).
+ * Design tokens from the "Vocab Learner UX improvements" claude.ai/design mock.
+ * Light palette on :root, dark palette under [data-theme="dark"] — the attribute
+ * is set on <html> by useTheme() (localStorage → Telegram colorScheme → OS).
  */
 :root {
-  --fb-bg: #ffffff;
-  --fb-section: #f1f2f6;
-  --fb-ink: #1c1c1e;
-  --fb-hint: #8e8e93;
-  --fb-accent: #2481cc;
-  --fb-on-accent: #ffffff;
-  --fb-danger: #d63b30;
-  --fb-separator: #e5e5ea;
+  --bg-app: #ffffff;
+  --bg-surface: rgb(246, 247, 251);
+  --bg-muted: rgb(243, 245, 247);
+  --bg-elev: #ffffff;
+  --border-1: rgb(224, 230, 233);
+  --border-2: rgb(191, 195, 212);
+  --fg-1: #000000;
+  --fg-2: rgb(51, 51, 51);
+  --fg-3: rgb(87, 91, 104);
+  --fg-4: rgb(127, 127, 127);
+  --fg-5: rgb(153, 153, 153);
+  --brand-700: rgb(13, 111, 89);
+  --brand-700-rgb: 13, 111, 89;
+  --danger-raw: rgb(253, 92, 99);
+  --danger-rgb: 253, 92, 99;
+  --success-soft: rgb(212, 241, 231);
+  --tag-blue-bg: rgb(226, 232, 251);
+  --tag-blue-fg: rgb(90, 124, 232);
+  --tag-lilac-bg: rgb(220, 215, 245);
+  --tag-lilac-fg: rgb(138, 124, 214);
+  --tag-peach-bg: rgb(255, 223, 196);
+  --tag-peach-fg: rgb(199, 130, 66);
+  --tag-pink-bg: rgb(251, 230, 243);
+  --tag-pink-fg: rgb(214, 110, 140);
+  --tag-mint-bg: rgb(212, 241, 231);
+  --tag-mint-fg: rgb(13, 140, 110);
+  --grad-cta: linear-gradient(180deg, rgb(68, 78, 103) 0%, rgb(13, 111, 89) 100%);
+  /* --sh-*: runtime shadow slots; @theme's --shadow-* keys point here so
+   * `shadow-md` etc. flip with the theme (Tailwind reserves --shadow-* names). */
+  --sh-sm: 0 2px 6px 0 rgba(0, 0, 0, 0.06);
+  --sh-md: 0 8px 20px 0 rgba(0, 0, 0, 0.08);
+  --sh-lg: 0 20px 30px 0 rgba(0, 0, 0, 0.1);
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fb-bg: #17212b;
-    --fb-section: #232e3c;
-    --fb-ink: #f5f5f5;
-    --fb-hint: #708499;
-    --fb-accent: #6ab2f2;
-    --fb-on-accent: #ffffff;
-    --fb-danger: #ec6458;
-    --fb-separator: #101921;
-  }
+[data-theme="dark"] {
+  --bg-app: rgb(20, 27, 52);
+  --bg-surface: rgb(39, 43, 56);
+  --bg-muted: rgb(52, 56, 67);
+  --bg-elev: rgb(52, 56, 67);
+  --border-1: rgba(255, 255, 255, 0.12);
+  --border-2: rgba(255, 255, 255, 0.2);
+  --fg-1: #ffffff;
+  --fg-2: rgb(210, 213, 227);
+  --fg-3: rgb(163, 167, 189);
+  --fg-4: rgb(130, 134, 156);
+  --fg-5: rgb(104, 108, 130);
+  --brand-700: rgb(35, 168, 138);
+  --brand-700-rgb: 35, 168, 138;
+  --danger-raw: rgb(255, 124, 130);
+  --danger-rgb: 255, 124, 130;
+  --success-soft: rgba(15, 219, 173, 0.16);
+  --tag-blue-bg: rgba(102, 141, 247, 0.18);
+  --tag-blue-fg: rgb(150, 178, 255);
+  --tag-lilac-bg: rgba(160, 150, 236, 0.2);
+  --tag-lilac-fg: rgb(196, 186, 248);
+  --tag-peach-bg: rgba(229, 160, 96, 0.2);
+  --tag-peach-fg: rgb(240, 182, 124);
+  --tag-pink-bg: rgba(235, 140, 142, 0.18);
+  --tag-pink-fg: rgb(247, 164, 174);
+  --tag-mint-bg: rgba(15, 219, 173, 0.18);
+  --tag-mint-fg: rgb(96, 226, 192);
+  --sh-sm: 0 2px 6px 0 rgba(0, 0, 0, 0.28);
+  --sh-md: 0 8px 20px 0 rgba(0, 0, 0, 0.32);
+  --sh-lg: 0 20px 30px 0 rgba(0, 0, 0, 0.4);
 }
 
 @theme {
   --color-*: initial;
-  --color-base: var(--tg-theme-bg-color, var(--fb-bg));
-  --color-section: var(--tg-theme-section-bg-color, var(--tg-theme-secondary-bg-color, var(--fb-section)));
-  --color-ink: var(--tg-theme-text-color, var(--fb-ink));
-  --color-hint: var(--tg-theme-hint-color, var(--fb-hint));
-  --color-accent: var(--tg-theme-button-color, var(--fb-accent));
-  --color-on-accent: var(--tg-theme-button-text-color, var(--fb-on-accent));
-  --color-link: var(--tg-theme-link-color, var(--fb-accent));
-  --color-danger: var(--tg-theme-destructive-text-color, var(--fb-danger));
-  --color-separator: var(--tg-theme-section-separator-color, var(--fb-separator));
+  --color-base: var(--bg-app);
+  --color-section: var(--bg-surface);
+  --color-muted: var(--bg-muted);
+  --color-elev: var(--bg-elev);
+  --color-ink: var(--fg-1);
+  --color-ink-2: var(--fg-2);
+  --color-ink-3: var(--fg-3);
+  --color-hint: var(--fg-4);
+  --color-faint: var(--fg-5);
+  --color-accent: var(--brand-700);
+  --color-on-accent: #ffffff;
+  --color-link: var(--brand-700);
+  --color-danger: var(--danger-raw);
+  --color-separator: var(--border-1);
+  --color-border-2: var(--border-2);
+  --color-success-soft: var(--success-soft);
+  --color-tag-blue-bg: var(--tag-blue-bg);
+  --color-tag-blue-fg: var(--tag-blue-fg);
+  --color-tag-lilac-bg: var(--tag-lilac-bg);
+  --color-tag-lilac-fg: var(--tag-lilac-fg);
+  --color-tag-peach-bg: var(--tag-peach-bg);
+  --color-tag-peach-fg: var(--tag-peach-fg);
+  --color-tag-pink-bg: var(--tag-pink-bg);
+  --color-tag-pink-fg: var(--tag-pink-fg);
+  --color-tag-mint-bg: var(--tag-mint-bg);
+  --color-tag-mint-fg: var(--tag-mint-fg);
   --color-transparent: transparent;
 
-  /* Lexicographic voice: serif headwords + IPA, native UI everywhere else. */
+  --shadow-sm: var(--sh-sm);
+  --shadow-md: var(--sh-md);
+  --shadow-lg: var(--sh-lg);
+
+  /* Lexicographic voice: serif headwords + IPA, Inter UI, Sora display. */
   --font-entry: Georgia, "Times New Roman", "Noto Serif", serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-display: "Sora", "Inter Variable", system-ui, sans-serif;
+
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@utility grad-cta {
+  background-image: var(--grad-cta);
 }
 
 html,
@@ -53,7 +128,10 @@ body {
 }
 
 body {
-  @apply bg-base text-ink font-sans antialiased;
+  @apply bg-base text-ink-2 font-sans antialiased;
+  transition:
+    background-color 0.25s var(--ease-standard),
+    color 0.25s var(--ease-standard);
   /* Telegram Mini Apps can overscroll-bounce; keep the chrome steady. */
   overscroll-behavior-y: none;
 }
