@@ -28,6 +28,11 @@ const router = createRouter({
       component: () => import("./views/PracticeView.vue"),
     },
     {
+      path: "/practice/results",
+      name: "practice-results",
+      component: () => import("./views/ResultsView.vue"),
+    },
+    {
       // Lightweight pronunciation player opened from the bot's 🎧 button — no auth.
       path: "/youglish/:word",
       name: "youglish",

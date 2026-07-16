@@ -88,10 +88,10 @@
 
 ## Phase 6 — Practice
 
-- [ ] **6.1 Session store** (pinia) — build queue from selection or all saved, shuffle.
-- [ ] **6.2 Flashcard component** — front: word (+IPA); tap → GSAP 3D flip (`rotationY`, backface) → back: senses + RU; buttons `✅ I know` / `❌ Don't know`; swipe-out animation right/left on grade; progress bar with eased fill.
-- [ ] **6.3 Review persistence** — each grade → `POST /api/practice/review`; optimistic UI, retry on failure.
-- [ ] **6.4 Results screen** — score count-up, two cascading lists (Known / Needs work), confetti on ≥80%, "Retry unknown" button that seeds a new session.
+- [x] **6.1 Session store** (pinia) — build queue from selection or all saved, shuffle.
+- [x] **6.2 Flashcard component** — front: word (+IPA); tap → GSAP 3D flip (`rotationY`, backface) → back: senses + RU; buttons `✅ I know` / `❌ Don't know`; swipe-out animation right/left on grade; progress bar with eased fill. *(CSS 3D flip + GSAP swipe-out per the design mock.)*
+- [x] **6.3 Review persistence** — each grade → `POST /api/practice/review`; optimistic UI, retry on failure.
+- [x] **6.4 Results screen** — Know / Needs-work stat tiles, needs-work chips, "Retry needs-work" seeds a new session. *(Simplified to the claude.ai/design mock: no confetti/count-up.)*
   *Done when:* full loop works: select → grade all → results → retry unknown.
 
 ## Phase 7 — Deploy (free tier)
