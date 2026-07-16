@@ -52,6 +52,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     console.error("Invalid environment: WEBHOOK_URL is required when BOT_MODE=webhook");
     process.exit(1);
   }
+  if (parsed.data.BOT_MODE === "webhook" && parsed.data.WEBHOOK_SECRET === "dev-webhook-secret") {
+    console.error(
+      "Invalid environment: WEBHOOK_SECRET must be set explicitly when BOT_MODE=webhook",
+    );
+    process.exit(1);
+  }
   return parsed.data;
 }
 
