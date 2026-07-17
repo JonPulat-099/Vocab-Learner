@@ -5,6 +5,5 @@
 **/.env.*
 !**/.env.example
 *.log
-apps/web
 apps/server/fixtures
 docs

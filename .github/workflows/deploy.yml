@@ -31,13 +31,25 @@ jobs:
     permissions:
       contents: read
       packages: write
-    outputs:
-      image: ${{ steps.meta.outputs.image }}
+    strategy:
+      matrix:
+        include:
+          - name: server
+            dockerfile: apps/server/Dockerfile
+            build-args: ""
+          - name: web
+            dockerfile: apps/web/Dockerfile
+            # VITE_* values are baked into the static bundle at build time
+            # (public, non-secret) — set them as GitHub repo variables.
+            build-args: |
+              VITE_API_URL=${{ vars.VITE_API_URL }}
+              VITE_TG_BOT_USERNAME=${{ vars.VITE_TG_BOT_USERNAME }}
+              VITE_YOUGLISH_LANG=${{ vars.VITE_YOUGLISH_LANG || 'english' }}
     steps:
       - uses: actions/checkout@v4
       - id: meta
         # GHCR requires a lowercase image path; repository owner may contain capitals.
-        run: echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/server" >> "$GITHUB_OUTPUT"
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/${{ matrix.name }}" >> "$GITHUB_OUTPUT"
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
@@ -47,13 +59,14 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/server/Dockerfile
+          file: ${{ matrix.dockerfile }}
           push: true
+          build-args: ${{ matrix.build-args }}
           tags: |
             ${{ steps.meta.outputs.image }}:latest
             ${{ steps.meta.outputs.image }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
 
   deploy:
     needs: build-push
@@ -62,11 +75,15 @@ jobs:
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE || 'server' }}
+      RAILWAY_SERVICE_WEB: ${{ vars.RAILWAY_SERVICE_WEB || 'web' }}
     steps:
       # --from-source makes Railway re-pull the moved :latest tag instead of
       # reusing the previous deployment's image digest.
       # Skipped until the RAILWAY_TOKEN project-token secret is configured (task 7.3);
       # the secrets context is unavailable in job-level `if`, hence the step-level guard.
-      - name: Redeploy service with fresh image
+      - name: Redeploy server with fresh image
         if: env.RAILWAY_TOKEN != ''
         run: railway redeploy --service "$RAILWAY_SERVICE" --from-source --yes
+      - name: Redeploy web with fresh image
+        if: env.RAILWAY_TOKEN != ''
+        run: railway redeploy --service "$RAILWAY_SERVICE_WEB" --from-source --yes

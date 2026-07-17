@@ -106,10 +106,10 @@ Source parsers are tested against **saved fixtures** (`fixtures/*.html`, `fixtur
 | Piece | Platform |
 |---|---|
 | server (bot + API) | **Railway** (Hobby, usage-based) — no sleep mode, so the bot answers instantly; TLS on `*.up.railway.app` satisfies Telegram's webhook requirement |
-| web | **Cloudflare Pages** (free) |
+| web | **Railway** — second service, static Vite bundle served by nginx (VITE_* vars baked in at CI image build) |
 | database | **Supabase** free tier |
 
-Flow: GitHub Actions builds the Docker image and pushes it to GHCR → the Railway service is sourced from that image (`BOT_MODE=webhook`, `PORT` injected) and CI triggers `railway redeploy --from-source` to pull the fresh `:latest` → webhook registered at `https://<service>.up.railway.app/webhook/<WEBHOOK_SECRET>`. The Pages domain must be set via BotFather's `/setdomain` for the Login Widget to work. See `TODO.md` Phase 7.
+Flow: GitHub Actions builds both Docker images (`server`, `web`) and pushes them to GHCR → the Railway services are sourced from those images (`BOT_MODE=webhook`, `PORT` injected) and CI triggers `railway redeploy --from-source` for each to pull the fresh `:latest` → webhook registered at `https://<server-domain>/webhook/<WEBHOOK_SECRET>`. The web domain must be set via BotFather's `/setdomain` for the Login Widget to work. See `TODO.md` Phase 7.
 
 ## Docs
 
