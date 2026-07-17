@@ -57,17 +57,15 @@ jobs:
   deploy:
     needs: build-push
     runs-on: ubuntu-latest
-    # Koyeb never re-pulls a moved tag on its own — an explicit redeploy is required.
-    # Skipped until the KOYEB_API_TOKEN secret is configured (task 7.3).
-    if: ${{ secrets.KOYEB_API_TOKEN != '' }}
+    container: ghcr.io/railwayapp/cli:latest
     env:
-      KOYEB_API_TOKEN: ${{ secrets.KOYEB_API_TOKEN }}
-      KOYEB_APP: ${{ vars.KOYEB_APP || 'vocab-learner' }}
-      KOYEB_SERVICE: ${{ vars.KOYEB_SERVICE || 'server' }}
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE || 'server' }}
     steps:
-      - name: Install Koyeb CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/koyeb/koyeb-cli/master/install.sh | sh
-          echo "$HOME/.koyeb/bin" >> "$GITHUB_PATH"
-      - name: Redeploy service
-        run: koyeb services redeploy "$KOYEB_APP/$KOYEB_SERVICE" --token "$KOYEB_API_TOKEN" --wait --wait-timeout 10m
+      # --from-source makes Railway re-pull the moved :latest tag instead of
+      # reusing the previous deployment's image digest.
+      # Skipped until the RAILWAY_TOKEN project-token secret is configured (task 7.3);
+      # the secrets context is unavailable in job-level `if`, hence the step-level guard.
+      - name: Redeploy service with fresh image
+        if: env.RAILWAY_TOKEN != ''
+        run: railway redeploy --service "$RAILWAY_SERVICE" --from-source --yes

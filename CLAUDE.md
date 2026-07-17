@@ -61,7 +61,7 @@ I. (EMOTION) emotion
 - **Clear history deletes chat messages**, not just DB rows: iterate `search_history` (`chat_id`, `query_message_id`, `result_message_id`) → `deleteMessage` each → then delete rows. Telegram rejects deletes for messages >48h — catch per-message and continue, never abort the loop.
 - **Search UX:** send "⏳" placeholder immediately, edit it in place with the card (pipeline takes 3–8s). Store both message ids in `search_history`.
 - **Practice v1 is flashcards only:** grade 1 = know, 0 = don't know, `mode:'flashcard'`. SM-2 columns (`ease`, `interval_days`, `due_at`) exist in `user_words` but are intentionally unused — leave them alone.
-- **Koyeb prod:** `BOT_MODE=webhook`, `PORT` injected by platform, image built in GitHub Actions (not on Koyeb). Health check: `GET /healthz`.
+- **Railway prod:** `BOT_MODE=webhook`, `PORT` injected by platform, image built in GitHub Actions and pushed to GHCR — Railway's service source is the image, not the repo, so `railway.json`/repo settings don't apply; CI triggers `railway redeploy --from-source` to re-pull `:latest`. Health check: `GET /healthz` (set as healthcheck path in Railway service settings).
 
 ## Conventions
 

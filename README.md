@@ -101,15 +101,15 @@ pnpm -r test
 
 Source parsers are tested against **saved fixtures** (`fixtures/*.html`, `fixtures/*.json`) — CI never makes live requests. If Cambridge changes its markup, re-save the fixture and update the single `SELECTORS` config in `cambridge.service.ts`.
 
-## Deployment (free tier)
+## Deployment
 
 | Piece | Platform |
 |---|---|
-| server (bot + API) | **Koyeb** free — no sleep mode, so the bot answers instantly; TLS on `*.koyeb.app` satisfies Telegram's webhook requirement |
-| web | **Cloudflare Pages** |
+| server (bot + API) | **Railway** (Hobby, usage-based) — no sleep mode, so the bot answers instantly; TLS on `*.up.railway.app` satisfies Telegram's webhook requirement |
+| web | **Cloudflare Pages** (free) |
 | database | **Supabase** free tier |
 
-Flow: GitHub Actions builds the Docker image (Koyeb's free 0.1 vCPU is too slow to build) → Koyeb deploys it with `BOT_MODE=webhook` → webhook registered at `https://<app>.koyeb.app/webhook/<WEBHOOK_SECRET>`. The Pages domain must be set via BotFather's `/setdomain` for the Login Widget to work. See `TODO.md` Phase 7.
+Flow: GitHub Actions builds the Docker image and pushes it to GHCR → the Railway service is sourced from that image (`BOT_MODE=webhook`, `PORT` injected) and CI triggers `railway redeploy --from-source` to pull the fresh `:latest` → webhook registered at `https://<service>.up.railway.app/webhook/<WEBHOOK_SECRET>`. The Pages domain must be set via BotFather's `/setdomain` for the Login Widget to work. See `TODO.md` Phase 7.
 
 ## Docs
 
