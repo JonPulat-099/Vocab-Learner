@@ -7,6 +7,10 @@ import { createUserWordsRepo } from "./db/user-words.repo.js";
 import { createPracticeRepo } from "./db/practice.repo.js";
 import { createWordsRepo } from "./services/words.repo.js";
 import { createGeminiService } from "./services/gemini.service.js";
+import { createOpenAiCompatibleService } from "./services/openai-compatible.service.js";
+import type { SummarizerService } from "./services/summarizer.js";
+import { createActiveModelHolder } from "./services/active-model.js";
+import { createBotSettingsRepo } from "./db/bot-settings.repo.js";
 import { BOT_COMMANDS, createBot } from "./bot/bot.js";
 import { registerApi } from "./routes/api.js";
 
@@ -30,11 +34,79 @@ const wordsRepo = createWordsRepo({
   logger: app.log,
 });
 
-const gemini = createGeminiService({
-  apiKey: config.GEMINI_API_KEY,
-  model: config.GEMINI_MODEL,
-  timeoutMs: config.GEMINI_TIMEOUT_MS,
-});
+// One entry per provider whose env vars are present; config.ts guarantees at
+// least one. The owner switches between them at runtime via the hidden /model
+// command; the choice is persisted in bot_settings.active_model.
+const providers: Record<string, SummarizerService> = {};
+if (config.GEMINI_API_KEY) {
+  providers.gemini = createGeminiService({
+    apiKey: config.GEMINI_API_KEY,
+    model: config.GEMINI_MODEL,
+    timeoutMs: config.GEMINI_TIMEOUT_MS,
+  });
+}
+if (config.DEEPSEEK_API_KEY) {
+  providers.deepseek = createOpenAiCompatibleService({
+    providerLabel: "deepseek",
+    baseURL: config.DEEPSEEK_BASE_URL,
+    apiKey: config.DEEPSEEK_API_KEY,
+    model: config.DEEPSEEK_MODEL,
+    timeoutMs: config.DEEPSEEK_TIMEOUT_MS,
+  });
+}
+if (config.GLM_API_KEY) {
+  providers.glm = createOpenAiCompatibleService({
+    providerLabel: "glm",
+    baseURL: config.GLM_BASE_URL,
+    apiKey: config.GLM_API_KEY,
+    model: config.GLM_MODEL,
+    timeoutMs: config.GLM_TIMEOUT_MS,
+  });
+}
+if (config.SAKANA_API_KEY) {
+  providers.sakana = createOpenAiCompatibleService({
+    providerLabel: "sakana",
+    baseURL: config.SAKANA_BASE_URL,
+    apiKey: config.SAKANA_API_KEY,
+    model: config.SAKANA_MODEL,
+    timeoutMs: config.SAKANA_TIMEOUT_MS,
+  });
+}
+if (config.KIMI_API_KEY) {
+  providers.kimi = createOpenAiCompatibleService({
+    providerLabel: "kimi",
+    baseURL: config.KIMI_BASE_URL,
+    apiKey: config.KIMI_API_KEY,
+    model: config.KIMI_MODEL,
+    timeoutMs: config.KIMI_TIMEOUT_MS,
+  });
+}
+if (config.COPILOT_BASE_URL) {
+  providers.copilot = createOpenAiCompatibleService({
+    providerLabel: "copilot",
+    baseURL: config.COPILOT_BASE_URL,
+    apiKey: config.COPILOT_API_KEY,
+    model: config.COPILOT_MODEL,
+    timeoutMs: config.COPILOT_TIMEOUT_MS,
+  });
+}
+
+const botSettingsRepo = createBotSettingsRepo(supabase);
+let persistedActiveModel = await botSettingsRepo.getActiveModel();
+if (!providers[persistedActiveModel]) {
+  // The persisted choice's provider was un-configured since it was set (env
+  // var removed) — fall back to any configured one and persist the correction.
+  const fallback = Object.keys(providers)[0]!;
+  app.log.warn(
+    { persisted: persistedActiveModel, fallback },
+    "persisted active_model has no configured provider — falling back",
+  );
+  persistedActiveModel = fallback;
+  await botSettingsRepo
+    .setActiveModel(fallback)
+    .catch((err) => app.log.warn({ err }, "failed to persist corrected active_model"));
+}
+const activeModel = createActiveModelHolder(persistedActiveModel, botSettingsRepo);
 
 const usersRepo = createUsersRepo(supabase);
 const userWordsRepo = createUserWordsRepo(supabase);
@@ -46,7 +118,8 @@ const bot = createBot({
   wordsRepo,
   usersRepo,
   userWordsRepo,
-  gemini,
+  providers,
+  activeModel,
   logger: app.log,
 });
 
