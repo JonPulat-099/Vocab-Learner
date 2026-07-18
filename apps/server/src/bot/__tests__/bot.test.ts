@@ -79,7 +79,10 @@ function setup(
       isSaved: vi.fn(async () => false),
       listSaved: vi.fn(async () => ({ items: [] as Array<{ word_id: string; word: string }>, total: 0 })),
     },
-    gemini: { summarizeWord: vi.fn(async () => feelingSummary) },
+    providers: {
+      gemini: { summarizeWord: vi.fn(async () => feelingSummary) },
+    } as Record<string, { summarizeWord: ReturnType<typeof vi.fn> }>,
+    activeModel: { get: vi.fn(() => "gemini"), set: vi.fn(async () => {}) },
   };
   const bot = createBot(deps as unknown as BotDeps);
   bot.botInfo = {
@@ -207,7 +210,7 @@ describe("bot", () => {
     };
     const keyboardFor = async (origin: string) => {
       const s = setup({ feeling: { kind: "word", row: feelingRow } }, origin);
-      s.deps.gemini.summarizeWord.mockResolvedValue(manySenses);
+      s.deps.providers.gemini.summarizeWord.mockResolvedValue(manySenses);
       await s.bot.handleUpdate(textUpdate("feeling"));
       const edit = s.calls.find((c) => c.method === "editMessageText")!;
       return JSON.stringify(edit.payload.reply_markup);
@@ -283,7 +286,7 @@ describe("bot", () => {
       },
     });
     const { GeminiUnavailable } = await import("../../services/gemini.service.js");
-    deps.gemini.summarizeWord.mockRejectedValue(new GeminiUnavailable("down"));
+    deps.providers.gemini.summarizeWord.mockRejectedValue(new GeminiUnavailable("down"));
 
     await bot.handleUpdate(textUpdate("feeling"));
     const edit = calls.find((c) => c.method === "editMessageText")!;
@@ -383,7 +386,7 @@ describe("/mywords (3.2)", () => {
 
     expect(deps.wordsRepo.getWordById).toHaveBeenCalledWith("word-1");
     expect(deps.wordsRepo.getOrFetchWord).not.toHaveBeenCalled();
-    expect(deps.gemini.summarizeWord).not.toHaveBeenCalled(); // summary already cached
+    expect(deps.providers.gemini.summarizeWord).not.toHaveBeenCalled(); // summary already cached
     const edit = calls.find((c) => c.method === "editMessageText")!;
     expect(edit.payload.text).toContain("<b>feeling</b>");
   });
@@ -460,6 +463,82 @@ describe("clear history (3.4)", () => {
     const finalEdit = calls.filter((c) => c.method === "editMessageText").at(-1)!;
     expect(finalEdit.payload.text).toContain("Deleted 3");
     expect(finalEdit.payload.text).toContain("1 were too old");
+  });
+});
+
+describe("hidden /model command (8.5)", () => {
+  function pickerKeyboard(calls: ApiCall[], method = "sendMessage") {
+    const call = calls.find((c) => c.method === method)!;
+    return (
+      call.payload.reply_markup as { inline_keyboard: Array<Array<{ text: string; callback_data: string }>> }
+    ).inline_keyboard.flat();
+  }
+
+  it("lists only configured providers with the active one marked", async () => {
+    const { bot, deps, calls } = setup({});
+    deps.providers.deepseek = { summarizeWord: vi.fn(async () => feelingSummary) };
+    await bot.handleUpdate(textUpdate("/model"));
+
+    const buttons = pickerKeyboard(calls);
+    expect(buttons).toEqual([
+      { text: "✅ Gemini", callback_data: "model:gemini" },
+      { text: "DeepSeek", callback_data: "model:deepseek" },
+    ]);
+  });
+
+  it("silently ignores /model from everyone when ownerTgId is unset (open mode)", async () => {
+    const { bot, calls } = setup({}, "http://localhost:5173", { openMode: true });
+    await bot.handleUpdate(textUpdate("/model", 999));
+    expect(calls).toHaveLength(0);
+  });
+
+  it("silently ignores /model from non-owners", async () => {
+    const { bot, calls } = setup({});
+    await bot.handleUpdate(textUpdate("/model", 999));
+    expect(calls).toHaveLength(0);
+  });
+
+  it("model:{id} switches the active model, toasts, and re-renders the keyboard", async () => {
+    const { bot, deps, calls } = setup({});
+    deps.providers.deepseek = { summarizeWord: vi.fn(async () => feelingSummary) };
+    deps.activeModel.get.mockReturnValue("deepseek"); // holder state after set()
+    await bot.handleUpdate(callbackUpdate("model:deepseek"));
+
+    expect(deps.activeModel.set).toHaveBeenCalledWith("deepseek");
+    const toast = calls.find((c) => c.method === "answerCallbackQuery")!;
+    expect(toast.payload.text).toContain("DeepSeek");
+    const buttons = pickerKeyboard(calls, "editMessageText");
+    expect(buttons).toContainEqual({ text: "✅ DeepSeek", callback_data: "model:deepseek" });
+    expect(buttons).toContainEqual({ text: "Gemini", callback_data: "model:gemini" });
+  });
+
+  it("rejects a stale keyboard tap for an unconfigured provider", async () => {
+    const { bot, deps, calls } = setup({});
+    await bot.handleUpdate(callbackUpdate("model:glm"));
+    expect(deps.activeModel.set).not.toHaveBeenCalled();
+    const toast = calls.find((c) => c.method === "answerCallbackQuery")!;
+    expect(toast.payload.text).toContain("no longer configured");
+  });
+
+  it("resolveSummary dispatches to whichever provider is active", async () => {
+    const { bot, deps } = setup({ feeling: { kind: "word", row: feelingRow } });
+    deps.providers.deepseek = { summarizeWord: vi.fn(async () => feelingSummary) };
+    deps.activeModel.get.mockReturnValue("deepseek");
+    await bot.handleUpdate(textUpdate("feeling"));
+
+    expect(deps.providers.deepseek.summarizeWord).toHaveBeenCalled();
+    expect(deps.providers.gemini.summarizeWord).not.toHaveBeenCalled();
+    expect(deps.wordsRepo.saveSummary).toHaveBeenCalledWith("word-1", feelingSummary);
+  });
+
+  it("falls back to the raw card when the active model has no provider", async () => {
+    const { bot, deps, calls } = setup({ feeling: { kind: "word", row: feelingRow } });
+    deps.activeModel.get.mockReturnValue("gone");
+    await bot.handleUpdate(textUpdate("feeling"));
+
+    expect(deps.wordsRepo.saveSummary).not.toHaveBeenCalled();
+    const edit = calls.find((c) => c.method === "editMessageText")!;
+    expect(edit.payload.text).toContain("feeling");
   });
 });
 

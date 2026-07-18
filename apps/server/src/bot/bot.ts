@@ -4,8 +4,9 @@ import type { WordSummary } from "@vocab/shared";
 import type { WordsRepo, WordRow } from "../services/words.repo.js";
 import type { UsersRepo } from "../db/users.repo.js";
 import type { UserWordsRepo } from "../db/user-words.repo.js";
-import type { GeminiService } from "../services/gemini.service.js";
-import { GeminiUnavailable } from "../services/gemini.service.js";
+import type { SummarizerService } from "../services/summarizer.js";
+import { SummarizerUnavailable } from "../services/summarizer.js";
+import type { ActiveModelHolder } from "../services/active-model.js";
 import { buildRawSummary } from "../services/raw-summary.js";
 import { parseMw } from "../services/mw.service.js";
 import { formatCard } from "./format.js";
@@ -45,7 +46,9 @@ export interface BotDeps {
   wordsRepo: WordsRepo;
   usersRepo: UsersRepo;
   userWordsRepo: UserWordsRepo;
-  gemini: GeminiService;
+  /** Configured summarization providers, keyed by model id (gemini, deepseek, …). */
+  providers: Record<string, SummarizerService>;
+  activeModel: ActiveModelHolder;
   logger?: BotLogger;
 }
 
@@ -93,6 +96,35 @@ export function createBot(deps: BotDeps): Bot {
 
   bot.command("clear", async (ctx) => {
     await sendClearConfirm(ctx);
+  });
+
+  // Hidden owner-only command: not in BOT_COMMANDS, so Telegram never suggests
+  // it. Checked against ownerTgId explicitly (the global guard is off when the
+  // bot runs open), and silently ignored otherwise so it stays undiscoverable.
+  bot.command("model", async (ctx) => {
+    if (!isOwner(ctx)) return;
+    await ctx.reply(texts.modelPicker(deps.activeModel.get()), {
+      reply_markup: modelKeyboard(),
+    });
+  });
+
+  bot.callbackQuery(/^model:(.+)$/, async (ctx) => {
+    if (!isOwner(ctx)) {
+      await ctx.answerCallbackQuery();
+      return;
+    }
+    const modelId = ctx.match[1]!;
+    if (!deps.providers[modelId]) {
+      // Stale keyboard from before this provider was un-configured.
+      await ctx.answerCallbackQuery({ text: texts.modelUnavailableToast });
+      return;
+    }
+    await deps.activeModel.set(modelId);
+    log.info({ model: modelId }, "active model switched");
+    await ctx.answerCallbackQuery({ text: texts.modelSwitchedToast(modelId) });
+    await ctx
+      .editMessageText(texts.modelPicker(modelId), { reply_markup: modelKeyboard() })
+      .catch(() => {}); // unchanged (double tap) — nothing to do
   });
 
   bot.on("message:text", async (ctx) => {
@@ -286,6 +318,20 @@ export function createBot(deps: BotDeps): Bot {
     await ctx.reply(texts.historyHeader, { reply_markup: keyboard });
   }
 
+  function isOwner(ctx: Context): boolean {
+    return deps.ownerTgId !== undefined && ctx.from?.id === deps.ownerTgId;
+  }
+
+  function modelKeyboard(): InlineKeyboard {
+    const keyboard = new InlineKeyboard();
+    const active = deps.activeModel.get();
+    for (const id of Object.keys(deps.providers)) {
+      const label = id === active ? `✅ ${texts.modelName(id)}` : texts.modelName(id);
+      keyboard.text(label, `model:${id}`).row();
+    }
+    return keyboard;
+  }
+
   async function sendClearConfirm(ctx: Context): Promise<void> {
     const keyboard = new InlineKeyboard()
       .text(texts.buttons.confirmClear, "clear:confirm")
@@ -329,19 +375,28 @@ export function createBot(deps: BotDeps): Bot {
       log.info({ word: row.word }, "summary served from cache");
       return row.summary;
     }
+    const modelId = deps.activeModel.get();
+    const provider = deps.providers[modelId];
+    if (!provider) {
+      log.error({ model: modelId }, "active model has no configured provider — raw fallback card");
+      return buildRawSummary(row.word, parseMw(row.mw_data), row.cambridge_data);
+    }
     try {
-      const summary = await deps.gemini.summarizeWord({
+      const summary = await provider.summarizeWord({
         word: row.word,
         mwRaw: row.mw_data,
         cambridge: row.cambridge_data,
       });
       await deps.wordsRepo.saveSummary(row.id, summary);
-      log.info({ word: row.word }, "gemini summary generated and cached");
+      log.info({ word: row.word, model: modelId }, "summary generated and cached");
       return summary;
     } catch (err) {
-      if (err instanceof GeminiUnavailable) {
-        log.warn({ word: row.word, err: err.message }, "gemini unavailable — raw fallback card");
-        // Not cached — next search retries Gemini.
+      if (err instanceof SummarizerUnavailable) {
+        log.warn(
+          { word: row.word, model: modelId, err: err.message },
+          "provider unavailable — raw fallback card",
+        );
+        // Not cached — next search retries the active provider.
         return buildRawSummary(row.word, parseMw(row.mw_data), row.cambridge_data);
       }
       throw err;

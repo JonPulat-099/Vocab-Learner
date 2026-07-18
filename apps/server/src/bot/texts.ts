@@ -1,4 +1,13 @@
 /** All bot user-facing strings live here (future i18n). */
+const modelNames: Record<string, string> = {
+  gemini: "Gemini",
+  deepseek: "DeepSeek",
+  glm: "GLM",
+  sakana: "Sakana Fugu",
+  kimi: "Kimi",
+  copilot: "Copilot",
+};
+
 export const texts = {
   start:
     "👋 Hi! Send me any English word and I'll build a card with definitions, " +
@@ -44,6 +53,11 @@ export const texts = {
     skipped > 0
       ? `🧹 History cleared. Deleted ${deleted} messages; ${skipped} were too old (48h+) or already gone.`
       : `🧹 History cleared. Deleted ${deleted} messages.`,
+  modelName: (id: string) => modelNames[id] ?? id,
+  modelPicker: (active: string) =>
+    `🤖 Active AI provider: ${modelNames[active] ?? active}\n\nChoose one:`,
+  modelSwitchedToast: (id: string) => `✅ Switched to ${modelNames[id] ?? id}`,
+  modelUnavailableToast: "⚠️ That provider is no longer configured",
   buttons: {
     save: "💾 Save",
     saved: "✅ Saved",
