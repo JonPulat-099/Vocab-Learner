@@ -102,6 +102,15 @@
 - [ ] **7.4 Railway web service** — point the `web` service source at the Docker image `ghcr.io/jonpulat-099/vocab-learner/web:latest` (built by CI from `apps/web/Dockerfile`; nginx serves the static bundle with SPA fallback, listens on injected `PORT`). Set GitHub repo **variables** `VITE_API_URL` (server domain), `VITE_TG_BOT_USERNAME`, `VITE_YOUGLISH_LANG` — they're baked into the bundle at image build, so changing them requires a rebuild, not a redeploy. Generate a domain; set the server's `WEB_ORIGIN` to it; BotFather `/setdomain` with that domain. Optional `RAILWAY_SERVICE_WEB` repo variable if the service isn't named `web`.
 - [ ] **7.5 Smoke test prod** — search, save, clear (48h path), login on site, open word, run a practice session.
 
+## Phase 8 — Multi-provider AI summarization
+
+- [x] **8.1 Shared summarizer interface + prompt module** — extract `summarizer.ts` (`SummarizerService`, `SummarizeInput`, `SummarizerUnavailable`) and `summary-prompt.ts` (instructions, JSON schema, sources block) from `gemini.service.ts`; `GeminiUnavailable extends SummarizerUnavailable`. *Done when:* existing gemini tests pass unmodified.
+- [x] **8.2 Generic OpenAI-compatible provider factory** — one `createOpenAiCompatibleService({providerLabel, baseURL, apiKey, model, timeoutMs})` for DeepSeek / GLM / Sakana Fugu / Kimi / Copilot-proxy: `/chat/completions` + `response_format: json_object` + zod validation; retries 429/5xx like Gemini. *Done when:* factory tests cover request shape, retry, no-retry, and schema-rejection paths.
+- [x] **8.3 Multi-provider env config** — `GEMINI_API_KEY` optional; `DEEPSEEK_* / GLM_* / SAKANA_* / KIMI_* / COPILOT_*` vars; boot fails unless ≥1 provider configured; `.env.example` blocks. *Done when:* config boots with any single provider set.
+- [x] **8.4 bot_settings + active-model wiring** — `0002_bot_settings.sql` (`active_model` seeded `gemini`), `bot-settings.repo.ts`, in-memory `active-model.ts` holder, `index.ts` builds provider map + loads persisted model with safe fallback when its provider was un-configured. *Done when:* boot logs fallback when persisted model is unavailable.
+- [x] **8.5 Hidden `/model` switch command** — owner-only (explicit `ownerTgId` check, silent no-op otherwise; NOT in `BOT_COMMANDS`); keyboard of configured providers with ✅ on the active one; `resolveSummary` dispatches by `activeModel.get()` and falls back to the raw card on `SummarizerUnavailable`. *Done when:* bot tests cover owner/non-owner/open-mode, switching, stale-keyboard tap, and dispatch.
+- [x] **8.6 Docs** — this section, plan doc §2.5, CLAUDE.md gotcha.
+
 ---
 
 ## Conventions for Claude Code

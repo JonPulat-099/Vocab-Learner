@@ -102,6 +102,14 @@ Telegram bot + website for English vocabulary learning with EN/RU definitions, A
 - Bot renders EN examples only (compact card, per the target format); the website shows full EN+RU pairs.
 - Fallback: if Gemini fails/times out, the bot returns a "raw" card built directly from MW + Cambridge — search must never fully fail because of the AI step.
 
+### 2.5 Multi-provider switching (Phase 8)
+
+Summarization is provider-pluggable. Besides Gemini (its own service, native `responseJsonSchema`), any OpenAI-compatible `/chat/completions` endpoint works through one generic factory (`openai-compatible.service.ts`): DeepSeek, GLM (Zhipu/Z.ai), Sakana Fugu, Kimi (Moonshot), and GitHub Copilot via a self-hosted proxy (`COPILOT_BASE_URL`). These use `response_format: json_object` with the schema spelled out in the prompt; all outputs are validated with the shared `WordSummarySchema` zod gate, and all failures surface as `SummarizerUnavailable` → raw-card fallback, same as Gemini.
+
+- Providers are enabled by presence of their env vars (`<PROVIDER>_API_KEY`, or `COPILOT_BASE_URL`); at least one is required at boot.
+- One **global** active model for the whole bot, persisted in `bot_settings.active_model`, switched at runtime by the owner via the hidden `/model` command (not in the Telegram menu; silent no-op for non-owners and when `OWNER_TG_ID` is unset).
+- Word cache is unchanged: one `words.summary` per word, first-generated-wins regardless of provider.
+
 ---
 
 ## 3. Database Schema (Supabase)
